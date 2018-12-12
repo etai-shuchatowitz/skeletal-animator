@@ -1,13 +1,9 @@
 package play;
 
-import engine.display.Window;
 import engine.scene.ICamera;
-import engine.utils.DisplayManager;
 import engine.utils.SmoothFloat;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 
 /**
  * Represents the in-game camera. This class is in charge of keeping the
@@ -39,8 +35,8 @@ public class Camera implements ICamera {
     private SmoothFloat angleAroundPlayer = new SmoothFloat(0, 10);
     private SmoothFloat distanceFromPlayer = new SmoothFloat(10, 5);
 
-    public Camera() {
-        this.projectionMatrix = createProjectionMatrix();
+    public Camera(int width, int height) {
+        this.projectionMatrix = createProjectionMatrix(width, height);
     }
 
     @Override
@@ -72,15 +68,15 @@ public class Camera implements ICamera {
 
     private void updateViewMatrix() {
         viewMatrix = viewMatrix.identity();
-        Matrix4f.rotate((float) Math.toRadians(pitch.get()), new Vector3f(1, 0, 0), viewMatrix, viewMatrix);
-        Matrix4f.rotate((float) Math.toRadians(yaw), new Vector3f(0, 1, 0), viewMatrix, viewMatrix);
+        viewMatrix.rotate((float) Math.toRadians(pitch.get()), new Vector3f(1, 0, 0), viewMatrix);
+        viewMatrix.rotate((float) Math.toRadians(yaw), new Vector3f(0, 1, 0), viewMatrix);
         Vector3f negativeCameraPos = new Vector3f(-position.x, -position.y, -position.z);
-        Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
+        viewMatrix.translate(negativeCameraPos, viewMatrix);
     }
 
-    private static Matrix4f createProjectionMatrix() {
+    private static Matrix4f createProjectionMatrix(int width, int height) {
         Matrix4f projectionMatrix = new Matrix4f();
-        float aspectRatio = (float) Window.getWidth() / (float) Display.getHeight();
+        float aspectRatio = (float) width / (float) height;
         float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
         float x_scale = y_scale / aspectRatio;
         float frustum_length = FAR_PLANE - NEAR_PLANE;

@@ -2,6 +2,7 @@ package play;
 
 import anim.loader.AnimatedModelLoader;
 import anim.model.AnimatedModel;
+import engine.display.Window;
 import engine.scene.ICamera;
 import engine.scene.Scene;
 import engine.utils.MyFile;
@@ -17,17 +18,17 @@ public class SceneLoader {
      *
      * @return The entire scene.
      */
-    public static Scene loadScene() {
-        ICamera camera = new Camera();
-        AnimatedModel entity = AnimatedModelLoader.loadEntity(new MyFile(GeneralSettings.MODEL_FILE),
-                new MyFile(GeneralSettings.DIFFUSE_FILE));
-        List<AnimatedModel> animatedModels = new ArrayList<>();
-        animatedModels.add(entity);
-//        Animation animation = AnimationLoader.loadAnimation(new MyFile(GeneralSettings.ANIM_FILE));
-//        entity.doAnimation(animation);
-        Scene scene = new Scene(animatedModels, camera);
-        scene.setLightDirection(GeneralSettings.LIGHT_DIR);
-        return scene;
-    }
+//    public static Scene loadScene(Window window) {
+//        ICamera camera = new Camera();
+//        AnimatedModel entity = AnimatedModelLoader.loadEntity(new MyFile(GeneralSettings.MODEL_FILE),
+//                new MyFile(GeneralSettings.DIFFUSE_FILE));
+//        List<AnimatedModel> animatedModels = new ArrayList<>();
+//        animatedModels.add(entity);
+////        Animation animation = AnimationLoader.loadAnimation(new MyFile(GeneralSettings.ANIM_FILE));
+////        entity.doAnimation(animation);
+//        Scene scene = new Scene(animatedModels, camera, window);
+//        scene.setLightDirection(GeneralSettings.LIGHT_DIR);
+//        return scene;
+//    }
 
 }

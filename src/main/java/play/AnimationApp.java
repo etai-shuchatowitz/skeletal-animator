@@ -1,38 +1,33 @@
 package play;
 
-import anim.model.AnimatedModel;
+import engine.display.MouseInput;
 import engine.display.Window;
-import engine.render.RenderEngine;
-import engine.scene.Scene;
+import engine.render.IGameLogic;
 
-public class AnimationApp {
+public class AnimationApp implements IGameLogic {
 
-    /**
-     * Initialises the engine and loads the scene. For every frame it updates the
-     * camera, updates the animated entity (which updates the animation),
-     * renders the scene to the screen, and then updates the display. When the
-     * display is close the engine gets cleaned up.
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-
-        RenderEngine engine = RenderEngine.init();
-
-        Window.WindowOptions options = new Window.WindowOptions();
-        Scene scene = SceneLoader.loadScene(options);
-
-        while (!Window.isCloseRequested()) {
-            scene.getCamera().move();
-            for(AnimatedModel animatedModel : scene.getAnimatedModels()) {
-                animatedModel.update();
-            }
-            engine.renderScene(scene);
-            engine.update();
-        }
-
-        engine.close();
+    @Override
+    public void init(Window window, Camera camera) throws Exception {
 
     }
 
+    @Override
+    public void input(Window window, MouseInput mouseInput, Camera camera) {
+
+    }
+
+    @Override
+    public void update(float interval, MouseInput mouseInput, Window window, Camera camera) {
+
+    }
+
+    @Override
+    public void render(Window window, Camera camera) {
+
+    }
+
+    @Override
+    public void cleanup() {
+
+    }
 }

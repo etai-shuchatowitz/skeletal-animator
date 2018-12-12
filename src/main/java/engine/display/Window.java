@@ -1,5 +1,6 @@
 package engine.display;
 
+import engine.scene.ICamera;
 import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -39,16 +40,20 @@ public class Window {
 
     private final WindowOptions opts;
 
-    private final Matrix4f projectionMatrix;
+    public ICamera getCamera() {
+        return camera;
+    }
 
-    public Window(String title, int width, int height, boolean vSync, WindowOptions opts) {
+    private ICamera camera;
+
+    public Window(String title, int width, int height, boolean vSync, WindowOptions opts, ICamera camera) {
         this.title = title;
         this.width = width;
         this.height = height;
         this.vSync = vSync;
         this.resized = false;
         this.opts = opts;
-        projectionMatrix = new Matrix4f();
+        this.camera = camera;
     }
 
     public void init() {
@@ -173,20 +178,6 @@ public class Window {
 
     public WindowOptions getWindowOptions() {
         return opts;
-    }
-
-    public Matrix4f getProjectionMatrix() {
-        return projectionMatrix;
-    }
-
-    public Matrix4f updateProjectionMatrix() {
-        float aspectRatio = (float) width / (float) height;
-        return projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
-    }
-
-    public static Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height) {
-        float aspectRatio = (float) width / (float) height;
-        return matrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
     }
 
     public void setClearColor(float r, float g, float b, float alpha) {
