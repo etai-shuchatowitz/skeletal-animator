@@ -2,6 +2,7 @@ package anim.model;
 
 import anim.animation.Animation;
 import anim.animation.Animator;
+import engine.Timer;
 import engine.buffers.VAO;
 import engine.textures.Texture;
 import org.joml.Matrix4f;
@@ -109,8 +110,8 @@ public class AnimatedModel {
      * Updates the animator for this entity, basically updating the animated
      * pose of the entity. Must be called every frame.
      */
-    public void update() {
-        animator.update();
+    public void update(Timer timer) {
+        animator.update(timer);
     }
 
     /**

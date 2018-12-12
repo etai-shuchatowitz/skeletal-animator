@@ -40,20 +40,13 @@ public class Window {
 
     private final WindowOptions opts;
 
-    public ICamera getCamera() {
-        return camera;
-    }
-
-    private ICamera camera;
-
-    public Window(String title, int width, int height, boolean vSync, WindowOptions opts, ICamera camera) {
+    public Window(String title, int width, int height, boolean vSync, WindowOptions opts) {
         this.title = title;
         this.width = width;
         this.height = height;
         this.vSync = vSync;
         this.resized = false;
         this.opts = opts;
-        this.camera = camera;
     }
 
     public void init() {

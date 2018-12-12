@@ -3,6 +3,7 @@ package play;
 import engine.scene.ICamera;
 import engine.utils.SmoothFloat;
 import org.joml.Matrix4f;
+import org.joml.Vector2d;
 import org.joml.Vector3f;
 
 /**
@@ -11,7 +12,6 @@ import org.joml.Vector3f;
  * with the left mouse button.
  *
  * @author Karl
- *
  */
 public class Camera implements ICamera {
 
@@ -39,10 +39,26 @@ public class Camera implements ICamera {
         this.projectionMatrix = createProjectionMatrix(width, height);
     }
 
+    private static Matrix4f createProjectionMatrix(int width, int height) {
+        Matrix4f projectionMatrix = new Matrix4f();
+        float aspectRatio = (float) width / (float) height;
+        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
+        float x_scale = y_scale / aspectRatio;
+        float frustum_length = FAR_PLANE - NEAR_PLANE;
+
+        projectionMatrix.m00(x_scale);
+        projectionMatrix.m11(y_scale);
+        projectionMatrix.m22(-((FAR_PLANE + NEAR_PLANE) / frustum_length));
+        projectionMatrix.m23(-1);
+        projectionMatrix.m32(-((2 * NEAR_PLANE * FAR_PLANE) / frustum_length));
+        projectionMatrix.m33(0);
+        return projectionMatrix;
+    }
+
     @Override
-    public void move() {
-        calculatePitch();
-        calculateAngleAroundPlayer();
+    public void move(Vector2d mousePosition, float elapsedTime) {
+        calculatePitch( (float) mousePosition.y, elapsedTime);
+        calculateAngleAroundPlayer( (float) mousePosition.x, elapsedTime );
         float horizontalDistance = calculateHorizontalDistance();
         float verticalDistance = calculateVerticalDistance();
         calculateCameraPosition(horizontalDistance, verticalDistance);
@@ -74,22 +90,6 @@ public class Camera implements ICamera {
         viewMatrix.translate(negativeCameraPos, viewMatrix);
     }
 
-    private static Matrix4f createProjectionMatrix(int width, int height) {
-        Matrix4f projectionMatrix = new Matrix4f();
-        float aspectRatio = (float) width / (float) height;
-        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
-        float x_scale = y_scale / aspectRatio;
-        float frustum_length = FAR_PLANE - NEAR_PLANE;
-
-        projectionMatrix.m00(x_scale);
-        projectionMatrix.m11(y_scale);
-        projectionMatrix.m22(-((FAR_PLANE + NEAR_PLANE) / frustum_length));
-        projectionMatrix.m23(-1);
-        projectionMatrix.m32(-((2 * NEAR_PLANE * FAR_PLANE) / frustum_length));
-        projectionMatrix.m33(0);
-        return projectionMatrix;
-    }
-
     private void calculateCameraPosition(float horizDistance, float verticDistance) {
         float theta = angleAroundPlayer.get();
         position.x = (float) (horizDistance * Math.sin(Math.toRadians(theta)));
@@ -115,13 +115,11 @@ public class Camera implements ICamera {
      * Calculate the pitch and change the pitch if the user is moving the mouse
      * up or down with the LMB pressed.
      */
-    private void calculatePitch() {
-        if (Mouse.isButtonDown(0)) {
-            float pitchChange = Mouse.getDY() * PITCH_SENSITIVITY;
-            pitch.increaseTarget(-pitchChange);
-            clampPitch();
-        }
-        pitch.update(DisplayManager.getFrameTime());
+    private void calculatePitch(float y, float elapsedTime) {
+        float pitchChange = y * PITCH_SENSITIVITY;
+        pitch.increaseTarget(-pitchChange);
+        clampPitch();
+        pitch.update(elapsedTime);
     }
 
     /**
@@ -129,12 +127,10 @@ public class Camera implements ICamera {
      * the camera from above). Basically the yaw. Changes the yaw when the user
      * moves the mouse horizontally with the LMB down.
      */
-    private void calculateAngleAroundPlayer() {
-        if (Mouse.isButtonDown(0)) {
-            float angleChange = Mouse.getDX() * YAW_SENSITIVITY;
-            angleAroundPlayer.increaseTarget(-angleChange);
-        }
-        angleAroundPlayer.update(DisplayManager.getFrameTime());
+    private void calculateAngleAroundPlayer(float x, float elapsedTime) {
+        float angleChange = x * YAW_SENSITIVITY;
+        angleAroundPlayer.increaseTarget(-angleChange);
+        angleAroundPlayer.update(elapsedTime);
     }
 
     /**

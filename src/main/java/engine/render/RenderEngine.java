@@ -1,9 +1,9 @@
 package engine.render;
 
 import anim.render.AnimatedModelRenderer;
+import engine.display.Window;
 import engine.scene.Scene;
 import engine.skybox.SkyboxRenderer;
-import engine.utils.DisplayManager;
 
 /**
  * This class represents the entire render engine.
@@ -22,8 +22,8 @@ public class RenderEngine {
     /**
      * Updates the display.
      */
-    public void update() {
-        DisplayManager.update();
+    public void update(Window window) {
+        window.update();
     }
 
     /**
@@ -39,9 +39,9 @@ public class RenderEngine {
     /**
      * Cleans up the renderers and closes the display.
      */
-    public void close() {
+    public void close(Window window) {
         renderer.cleanUp();
-        DisplayManager.closeDisplay();
+        window.windowShouldClose();
     }
 
     /**
@@ -51,11 +51,17 @@ public class RenderEngine {
      * @return
      */
     public static RenderEngine init() {
-        DisplayManager.createDisplay();
         SkyboxRenderer skyRenderer = new SkyboxRenderer();
         AnimatedModelRenderer entityRenderer = new AnimatedModelRenderer();
         MasterRenderer renderer = new MasterRenderer(entityRenderer, skyRenderer);
         return new RenderEngine(renderer);
+    }
+
+    /**
+     * Clean up when the game is closed.
+     */
+    public void cleanup() {
+        renderer.cleanUp();
     }
 
 }

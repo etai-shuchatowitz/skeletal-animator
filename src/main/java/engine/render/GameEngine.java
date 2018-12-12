@@ -22,6 +22,8 @@ public class GameEngine implements Runnable {
 
     private final MouseInput mouseInput;
 
+    private final ICamera camera;
+
     private double lastFps;
 
     private int fps;
@@ -35,8 +37,9 @@ public class GameEngine implements Runnable {
     public GameEngine(String windowTitle, int width, int height, boolean vSync, Window.WindowOptions opts, IGameLogic gameLogic) throws Exception {
         this.windowTitle = windowTitle;
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");
-        window = new Window(windowTitle, width, height, vSync, opts, new Camera(width, height));
+        window = new Window(windowTitle, width, height, vSync, opts);
         mouseInput = new MouseInput();
+        camera = new Camera(width, height);
         this.gameLogic = gameLogic;
         timer = new Timer();
     }
@@ -113,11 +116,11 @@ public class GameEngine implements Runnable {
 
     protected void input() {
         mouseInput.input(window);
-        gameLogic.input(window, mouseInput);
+        gameLogic.input(window, mouseInput, timer);
     }
 
     protected void update(float interval) {
-        gameLogic.update(interval, mouseInput, window);
+        gameLogic.update(interval, mouseInput, window, timer);
     }
 
     protected void render() {

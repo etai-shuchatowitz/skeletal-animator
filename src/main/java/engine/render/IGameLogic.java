@@ -1,18 +1,18 @@
 package engine.render;
 
+import engine.Timer;
 import engine.display.MouseInput;
 import engine.display.Window;
-import engine.scene.ICamera;
 
 public interface IGameLogic {
 
-    void init(Window window, ICamera camera) throws Exception;
+    void init(Window window) throws Exception;
 
-    void input(Window window, MouseInput mouseInput, ICamera camera);
+    void input(Window window, MouseInput mouseInput, Timer timer);
 
-    void update(float interval, MouseInput mouseInput, Window window, ICamera camera);
+    void update(float interval, MouseInput mouseInput, Window window, Timer timer);
 
-    void render(Window window, ICamera camera);
+    void render(Window window);
 
     void cleanup();
 }

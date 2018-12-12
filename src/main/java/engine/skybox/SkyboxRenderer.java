@@ -15,7 +15,7 @@ public class SkyboxRenderer {
 
     public SkyboxRenderer() {
         this.shader = new SkyboxShader();
-        this.box = CubeGenerator.generateCube(SIZE);
+//        this.box = CubeGenerator.generateCube(SIZE);
     }
 
     /**

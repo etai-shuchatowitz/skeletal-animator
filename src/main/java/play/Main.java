@@ -1,11 +1,8 @@
 package play;
 
-import anim.model.AnimatedModel;
 import engine.display.Window;
 import engine.render.GameEngine;
 import engine.render.IGameLogic;
-import engine.render.RenderEngine;
-import engine.scene.Scene;
 
 public class Main {
 
@@ -17,38 +14,18 @@ public class Main {
      *
      * @param args
      */
-//    public static void main(String[] args) {
-//
-//        RenderEngine engine = RenderEngine.init();
-//
-//        Window.WindowOptions options = new Window.WindowOptions();
-//        Scene scene = SceneLoader.loadScene(options);
-//
-////        while (!Window.isCloseRequested()) {
-////            scene.getCamera().move();
-////            for(AnimatedModel animatedModel : scene.getAnimatedModels()) {
-////                animatedModel.update();
-////            }
-////            engine.renderScene(scene);
-////            engine.update();
-////        }
-////
-////        engine.close();
-//
-//    }
-
     public static void main(String[] args) {
         try {
             boolean vSync = true;
             IGameLogic gameLogic = new AnimationApp();
-            Window.WindowOptions opts = new Window.WindowOptions();
-            opts.cullFace = false;
-            opts.showFps = true;
-            opts.compatibleProfile = true;
-            opts.antialiasing = true;
-            opts.frustumCulling = false;
-            GameEngine gameEng = new GameEngine("GAME", vSync, opts, gameLogic);
-            gameEng.start();
+//            Window.WindowOptions opts = new Window.WindowOptions();
+//            opts.cullFace = false;
+//            opts.showFps = true;
+//            opts.compatibleProfile = true;
+//            opts.antialiasing = true;
+//            opts.frustumCulling = false;
+//            GameEngine gameEng = new GameEngine("GAME", vSync, opts, gameLogic);
+//            gameEng.start();
         } catch (Exception excp) {
             excp.printStackTrace();
             System.exit(-1);

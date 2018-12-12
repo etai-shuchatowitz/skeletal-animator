@@ -2,7 +2,7 @@ package anim.animation;
 
 import anim.model.AnimatedModel;
 import anim.model.Joint;
-import engine.utils.DisplayManager;
+import engine.Timer;
 import org.joml.Matrix4f;
 
 import java.util.HashMap;
@@ -64,11 +64,11 @@ public class Animator {
      * time of the animation, and then applies that pose to all the model's
      * joints by setting the joint transforms.
      */
-    public void update() {
+    public void update(Timer timer) {
         if (currentAnimation == null) {
             return;
         }
-        increaseAnimationTime();
+        increaseAnimationTime(timer);
         Map<String, Matrix4f> currentPose = calculateCurrentAnimationPose();
         applyPoseToJoints(currentPose, entity.getRootJoint(), new Matrix4f());
     }
@@ -78,8 +78,8 @@ public class Animator {
      * progress. If the current animation has reached the end then the timer is
      * reset, causing the animation to loop.
      */
-    private void increaseAnimationTime() {
-        animationTime += DisplayManager.getFrameTime();
+    private void increaseAnimationTime(Timer timer) {
+        animationTime += timer.getTime();
         if (animationTime > currentAnimation.getLength()) {
             this.animationTime %= currentAnimation.getLength();
         }
