@@ -2,8 +2,6 @@ package org.lwjglb.engine;
 
 import org.lwjglb.engine.graph.InstancedMesh;
 import org.lwjglb.engine.graph.Mesh;
-import org.lwjglb.engine.graph.particles.IParticleEmitter;
-import org.lwjglb.engine.graph.weather.Fog;
 import org.lwjglb.engine.items.GameItem;
 import org.lwjglb.engine.items.SkyBox;
 
@@ -22,18 +20,13 @@ public class Scene {
 
     private SceneLight sceneLight;
 
-    private Fog fog;
-
     private boolean renderShadows;
-
-    private IParticleEmitter[] particleEmitters;
 
     private List<GameItem> gameItems;
 
     public Scene() {
         meshMap = new HashMap();
         instancedMeshMap = new HashMap();
-        fog = Fog.NOFOG;
         renderShadows = true;
         gameItems = new ArrayList<>();
     }
@@ -88,11 +81,6 @@ public class Scene {
         for (Mesh mesh : instancedMeshMap.keySet()) {
             mesh.cleanUp();
         }
-        if (particleEmitters != null) {
-            for (IParticleEmitter particleEmitter : particleEmitters) {
-                particleEmitter.cleanup();
-            }
-        }
     }
 
     public SkyBox getSkyBox() {
@@ -113,28 +101,6 @@ public class Scene {
 
     public void setSceneLight(SceneLight sceneLight) {
         this.sceneLight = sceneLight;
-    }
-
-    /**
-     * @return the fog
-     */
-    public Fog getFog() {
-        return fog;
-    }
-
-    /**
-     * @param fog the fog to set
-     */
-    public void setFog(Fog fog) {
-        this.fog = fog;
-    }
-
-    public IParticleEmitter[] getParticleEmitters() {
-        return particleEmitters;
-    }
-
-    public void setParticleEmitters(IParticleEmitter[] particleEmitters) {
-        this.particleEmitters = particleEmitters;
     }
 
 }

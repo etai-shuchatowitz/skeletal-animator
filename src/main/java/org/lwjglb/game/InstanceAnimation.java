@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class DummyGame implements IGameLogic {
+public class InstanceAnimation implements IGameLogic {
 
     private static final float MOUSE_SENSITIVITY = 0.2f;
 
@@ -46,7 +46,7 @@ public class DummyGame implements IGameLogic {
 
     private List<Animation> animations;
 
-    public DummyGame() {
+    public InstanceAnimation() {
         renderer = new Renderer();
         camera = new Camera();
         cameraInc = new Vector3f(0.0f, 0.0f, 0.0f);

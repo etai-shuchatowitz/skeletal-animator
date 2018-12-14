@@ -12,7 +12,6 @@ import org.lwjglb.engine.graph.anim.AnimatedFrame;
 import org.lwjglb.engine.graph.lights.DirectionalLight;
 import org.lwjglb.engine.graph.lights.PointLight;
 import org.lwjglb.engine.graph.lights.SpotLight;
-import org.lwjglb.engine.graph.particles.IParticleEmitter;
 import org.lwjglb.engine.graph.shadow.ShadowCascade;
 import org.lwjglb.engine.graph.shadow.ShadowRenderer;
 import org.lwjglb.engine.items.GameItem;
@@ -39,8 +38,6 @@ public class Renderer {
 
     private ShaderProgram skyBoxShaderProgram;
 
-    private ShaderProgram particlesShaderProgram;
-
     private final float specularPower;
 
     private final FrustumCullingFilter frustumFilter;
@@ -59,7 +56,6 @@ public class Renderer {
         shadowRenderer.init(window);
         setupSkyBoxShader();
         setupSceneShader();
-        setupParticlesShader();
     }
 
     public void render(Window window, Camera camera, Scene scene, boolean sceneChanged) {
@@ -83,22 +79,8 @@ public class Renderer {
 
         renderScene(window, camera, scene);
         renderSkyBox(window, camera, scene);
-        renderParticles(window, camera, scene);
     }
 
-    private void setupParticlesShader() throws Exception {
-        particlesShaderProgram = new ShaderProgram();
-        particlesShaderProgram.createVertexShader(Utils.loadResource("/shaders/particles_vertex.vs"));
-        particlesShaderProgram.createFragmentShader(Utils.loadResource("/shaders/particles_fragment.fs"));
-        particlesShaderProgram.link();
-
-        particlesShaderProgram.createUniform("viewMatrix");
-        particlesShaderProgram.createUniform("projectionMatrix");
-        particlesShaderProgram.createUniform("texture_sampler");
-
-        particlesShaderProgram.createUniform("numCols");
-        particlesShaderProgram.createUniform("numRows");
-    }
 
     private void setupSkyBoxShader() throws Exception {
         skyBoxShaderProgram = new ShaderProgram();
@@ -135,7 +117,6 @@ public class Renderer {
         sceneShaderProgram.createPointLightListUniform("pointLights", MAX_POINT_LIGHTS);
         sceneShaderProgram.createSpotLightListUniform("spotLights", MAX_SPOT_LIGHTS);
         sceneShaderProgram.createDirectionalLightUniform("directionalLight");
-        sceneShaderProgram.createFogUniform("fog");
 
         // Create uniforms for shadow mapping
         for (int i = 0; i < ShadowRenderer.NUM_CASCADES; i++) {
@@ -159,38 +140,6 @@ public class Renderer {
 
     public void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    }
-
-    private void renderParticles(Window window, Camera camera, Scene scene) {
-        particlesShaderProgram.bind();
-
-        Matrix4f viewMatrix = camera.getViewMatrix();
-        particlesShaderProgram.setUniform("viewMatrix", viewMatrix);
-        particlesShaderProgram.setUniform("texture_sampler", 0);
-        Matrix4f projectionMatrix = window.getProjectionMatrix();
-        particlesShaderProgram.setUniform("projectionMatrix", projectionMatrix);
-
-        IParticleEmitter[] emitters = scene.getParticleEmitters();
-        int numEmitters = emitters != null ? emitters.length : 0;
-
-        glDepthMask(false);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-        for (int i = 0; i < numEmitters; i++) {
-            IParticleEmitter emitter = emitters[i];
-            InstancedMesh mesh = (InstancedMesh) emitter.getBaseParticle().getMesh();
-
-            Texture text = mesh.getMaterial().getTexture();
-            particlesShaderProgram.setUniform("numCols", text.getNumCols());
-            particlesShaderProgram.setUniform("numRows", text.getNumRows());
-
-            mesh.renderListInstanced(emitter.getParticles(), true, transformation, viewMatrix);
-        }
-
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDepthMask(true);
-
-        particlesShaderProgram.unbind();
     }
 
     private void renderSkyBox(Window window, Camera camera, Scene scene) {
@@ -245,7 +194,6 @@ public class Renderer {
         SceneLight sceneLight = scene.getSceneLight();
         renderLights(viewMatrix, sceneLight);
 
-        sceneShaderProgram.setUniform("fog", scene.getFog());
         sceneShaderProgram.setUniform("texture_sampler", 0);
         sceneShaderProgram.setUniform("normalMap", 1);
         int start = 2;
@@ -365,70 +313,6 @@ public class Renderer {
         sceneShaderProgram.setUniform("directionalLight", currDirLight);
     }
 
-    private void renderCrossHair(Window window) {
-        if (window.getWindowOptions().compatibleProfile) {
-            glPushMatrix();
-            glLoadIdentity();
-
-            float inc = 0.05f;
-            glLineWidth(2.0f);
-
-            glBegin(GL_LINES);
-
-            glColor3f(1.0f, 1.0f, 1.0f);
-
-            // Horizontal line
-            glVertex3f(-inc, 0.0f, 0.0f);
-            glVertex3f(+inc, 0.0f, 0.0f);
-            glEnd();
-
-            // Vertical line
-            glBegin(GL_LINES);
-            glVertex3f(0.0f, -inc, 0.0f);
-            glVertex3f(0.0f, +inc, 0.0f);
-            glEnd();
-
-            glPopMatrix();
-        }
-    }
-
-    /**
-     * Renders the three axis in space (For debugging purposes only
-     *
-     * @param camera
-     */
-    private void renderAxes(Window window, Camera camera) {
-        Window.WindowOptions opts = window.getWindowOptions();
-        if (opts.compatibleProfile) {
-            glPushMatrix();
-            glLoadIdentity();
-            float rotX = camera.getRotation().x;
-            float rotY = camera.getRotation().y;
-            float rotZ = 0;
-            glRotatef(rotX, 1.0f, 0.0f, 0.0f);
-            glRotatef(rotY, 0.0f, 1.0f, 0.0f);
-            glRotatef(rotZ, 0.0f, 0.0f, 1.0f);
-            glLineWidth(2.0f);
-
-            glBegin(GL_LINES);
-            // X Axis
-            glColor3f(1.0f, 0.0f, 0.0f);
-            glVertex3f(0.0f, 0.0f, 0.0f);
-            glVertex3f(1.0f, 0.0f, 0.0f);
-            // Y Axis
-            glColor3f(0.0f, 1.0f, 0.0f);
-            glVertex3f(0.0f, 0.0f, 0.0f);
-            glVertex3f(0.0f, 1.0f, 0.0f);
-            // Z Axis
-            glColor3f(1.0f, 1.0f, 1.0f);
-            glVertex3f(0.0f, 0.0f, 0.0f);
-            glVertex3f(0.0f, 0.0f, 1.0f);
-            glEnd();
-
-            glPopMatrix();
-        }
-    }
-
     public void cleanup() {
         if (shadowRenderer != null) {
             shadowRenderer.cleanup();
@@ -439,8 +323,8 @@ public class Renderer {
         if (sceneShaderProgram != null) {
             sceneShaderProgram.cleanup();
         }
-        if (particlesShaderProgram != null) {
-            particlesShaderProgram.cleanup();
-        }
+//        if (particlesShaderProgram != null) {
+//            particlesShaderProgram.cleanup();
+//        }
     }
 }

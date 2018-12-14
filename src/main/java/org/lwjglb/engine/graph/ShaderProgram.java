@@ -7,7 +7,6 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjglb.engine.graph.lights.DirectionalLight;
 import org.lwjglb.engine.graph.lights.PointLight;
 import org.lwjglb.engine.graph.lights.SpotLight;
-import org.lwjglb.engine.graph.weather.Fog;
 
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -89,12 +88,6 @@ public class ShaderProgram {
         createUniform(uniformName + ".hasTexture");
         createUniform(uniformName + ".hasNormalMap");
         createUniform(uniformName + ".reflectance");
-    }
-
-    public void createFogUniform(String uniformName) throws Exception {
-        createUniform(uniformName + ".activeFog");
-        createUniform(uniformName + ".colour");
-        createUniform(uniformName + ".density");
     }
 
     public void setUniform(String uniformName, Matrix4f value) {
@@ -192,12 +185,6 @@ public class ShaderProgram {
         setUniform(uniformName + ".hasTexture", material.isTextured() ? 1 : 0);
         setUniform(uniformName + ".hasNormalMap", material.hasNormalMap() ? 1 : 0);
         setUniform(uniformName + ".reflectance", material.getReflectance());
-    }
-
-    public void setUniform(String uniformName, Fog fog) {
-        setUniform(uniformName + ".activeFog", fog.isActive() ? 1 : 0);
-        setUniform(uniformName + ".colour", fog.getColour());
-        setUniform(uniformName + ".density", fog.getDensity());
     }
 
     public void createVertexShader(String shaderCode) throws Exception {

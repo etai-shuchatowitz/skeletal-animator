@@ -128,6 +128,7 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
                 AINodeAnim aiNodeAnim = AINodeAnim.create(aiChannels.get(j));
                 String nodeName = aiNodeAnim.mNodeName().dataString();
                 Node node = rootNode.findByName(nodeName);
+
                 buildTransFormationMatrices(aiNodeAnim, node);
             }
 
