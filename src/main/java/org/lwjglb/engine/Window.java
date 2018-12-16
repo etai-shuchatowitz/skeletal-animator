@@ -185,11 +185,6 @@ public class Window {
         return projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
     }
 
-    public static Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height) {
-        float aspectRatio = (float) width / (float) height;
-        return matrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
-    }
-
     public void setClearColor(float r, float g, float b, float alpha) {
         glClearColor(r, g, b, alpha);
     }
@@ -250,7 +245,5 @@ public class Window {
         public boolean compatibleProfile;
 
         public boolean antialiasing;
-
-        public boolean frustumCulling;
     }
 }

@@ -68,7 +68,7 @@ public class GameEngine implements Runnable {
     protected void gameLoop() throws Exception {
         float elapsedTime;
         float accumulator = 0f;
-        float interval = 1f / TARGET_UPS;
+        float interval = 1.2f / TARGET_UPS;
 
         boolean running = true;
         while (running && !window.windowShouldClose()) {
@@ -96,7 +96,7 @@ public class GameEngine implements Runnable {
     
     private void sync() {
         float loopSlot = 1f / TARGET_FPS;
-        double endTime = timer.getLastLoopTime() + loopSlot;
+        double endTime = timer.getLastFrameTime() + loopSlot;
         while (timer.getTime() < endTime) {
             try {
                 Thread.sleep(1);
@@ -115,12 +115,12 @@ public class GameEngine implements Runnable {
     }
 
     protected void render() {
-        if ( window.getWindowOptions().showFps && timer.getLastLoopTime() - lastFps > 1 ) {
-            lastFps = timer.getLastLoopTime();
-            window.setWindowTitle(windowTitle + " - " + fps + " FPS");
-            fps = 0;
-        }
-        fps++;
+//        if ( window.getWindowOptions().showFps && timer.getLastFrameTime() - lastFps > 1 ) {
+//            lastFps = timer.getLastFrameTime();
+//            window.setWindowTitle(windowTitle + " - " + fps + " FPS");
+//            fps = 0;
+//        }
+//        fps++;
         gameLogic.render(window);
         window.update();
     }

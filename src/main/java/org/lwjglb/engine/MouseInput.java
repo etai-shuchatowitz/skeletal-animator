@@ -5,7 +5,9 @@ import org.joml.Vector2f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class MouseInput {
+public class
+
+MouseInput {
 
     private final Vector2d previousPos;
 

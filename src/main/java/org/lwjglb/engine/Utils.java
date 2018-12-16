@@ -30,17 +30,6 @@ public class Utils {
         return result;
     }
 
-    public static List<String> readAllLines(String fileName) throws Exception {
-        List<String> list = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Class.forName(Utils.class.getName()).getResourceAsStream(fileName)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                list.add(line);
-            }
-        }
-        return list;
-    }
-
     public static int[] listIntToArray(List<Integer> list) {
         int[] result = list.stream().mapToInt((Integer v) -> v).toArray();
         return result;
@@ -53,16 +42,6 @@ public class Utils {
             floatArr[i] = list.get(i);
         }
         return floatArr;
-    }
-
-    public static boolean existsResourceFile(String fileName) {
-        boolean result;
-        try (InputStream is = Utils.class.getResourceAsStream(fileName)) {
-            result = is != null;
-        } catch (Exception excp) {
-            result = false;
-        }
-        return result;
     }
 
     public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {

@@ -167,6 +167,44 @@ public class InstanceAnimation implements IGameLogic {
             }
 
         }
+        if (window.isKeyPressed(GLFW_KEY_I)) {
+            sceneChanged = true;
+            for (int i = 0; i < scene.getGameItems().size(); i++) {
+                GameItem gameItem = scene.getGameItems().get(i);
+                if(gameItem instanceof AnimGameItem) {
+                    AnimGameItem animGameItem = (AnimGameItem) gameItem;
+                    animGameItem.moveForward();
+                }
+            }
+        } else if (window.isKeyPressed(GLFW_KEY_K)) {
+            sceneChanged = true;
+            for (int i = 0; i < scene.getGameItems().size(); i++) {
+                GameItem gameItem = scene.getGameItems().get(i);
+                if(gameItem instanceof AnimGameItem) {
+                    AnimGameItem animGameItem = (AnimGameItem) gameItem;
+                    animGameItem.moveBackward();
+                }
+            }
+        }
+        if (window.isKeyPressed(GLFW_KEY_J)) {
+            sceneChanged = true;
+            for (int i = 0; i < scene.getGameItems().size(); i++) {
+                GameItem gameItem = scene.getGameItems().get(i);
+                if(gameItem instanceof AnimGameItem) {
+                    AnimGameItem animGameItem = (AnimGameItem) gameItem;
+                    animGameItem.turnClockwise();
+                }
+            }
+        } else if (window.isKeyPressed(GLFW_KEY_L)) {
+            sceneChanged = true;
+            for (int i = 0; i < scene.getGameItems().size(); i++) {
+                GameItem gameItem = scene.getGameItems().get(i);
+                if(gameItem instanceof AnimGameItem) {
+                    AnimGameItem animGameItem = (AnimGameItem) gameItem;
+                    animGameItem.turnCounterClockwise();
+                }
+            }
+        }
     }
 
     @Override
@@ -204,6 +242,14 @@ public class InstanceAnimation implements IGameLogic {
 //        if (animations.size() != 0) {
 //            for (Animation animation : animations) {
 //                animation.nextFrame();
+//            }
+//        }
+
+//        for (int i = 0; i < scene.getGameItems().size(); i++) {
+//            GameItem gameItem = scene.getGameItems().get(i);
+//            if(gameItem instanceof AnimGameItem) {
+//                AnimGameItem animGameItem = (AnimGameItem) gameItem;
+//                animGameItem.move();
 //            }
 //        }
 

@@ -40,15 +40,12 @@ public class Renderer {
 
     private final float specularPower;
 
-    private final FrustumCullingFilter frustumFilter;
-
     private final List<GameItem> filteredItems;
 
     public Renderer() {
         transformation = new Transformation();
         specularPower = 10f;
         shadowRenderer = new ShadowRenderer();
-        frustumFilter = new FrustumCullingFilter();
         filteredItems = new ArrayList<>();
     }
 
@@ -60,12 +57,6 @@ public class Renderer {
 
     public void render(Window window, Camera camera, Scene scene, boolean sceneChanged) {
         clear();
-
-        if (window.getOptions().frustumCulling) {
-            frustumFilter.updateFrustum(window.getProjectionMatrix(), camera.getViewMatrix());
-            frustumFilter.filter(scene.getGameMeshes());
-            frustumFilter.filter(scene.getGameInstancedMeshes());
-        }
 
         // Render depth map before view ports has been set up
         if (scene.isRenderShadows() && sceneChanged) {
@@ -323,8 +314,5 @@ public class Renderer {
         if (sceneShaderProgram != null) {
             sceneShaderProgram.cleanup();
         }
-//        if (particlesShaderProgram != null) {
-//            particlesShaderProgram.cleanup();
-//        }
     }
 }

@@ -2,27 +2,27 @@ package org.lwjglb.engine;
 
 public class Timer {
 
-    private double lastLoopTime;
+    private static double lastFrameTime;
     
-    public void init() {
-        lastLoopTime = getTime();
+    public static void init() {
+        lastFrameTime = getTime();
     }
 
     /**
      * @return Current time in seconds
      */
-    public double getTime() {
+    public static double getTime() {
         return System.nanoTime() / 1000_000_000.0;
     }
 
-    public float getElapsedTime() {
+    public static float getElapsedTime() {
         double time = getTime();
-        float elapsedTime = (float) (time - lastLoopTime);
-        lastLoopTime = time;
+        float elapsedTime = (float) (time - lastFrameTime);
+        lastFrameTime = time;
         return elapsedTime;
     }
 
-    public double getLastLoopTime() {
-        return lastLoopTime;
+    public static double getLastFrameTime() {
+        return lastFrameTime;
     }
 }

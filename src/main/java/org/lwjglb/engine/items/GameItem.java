@@ -60,6 +60,18 @@ public class GameItem {
         this.position.z = z;
     }
 
+    public void increaseRoation(float x, float y, float z) {
+        this.rotation.x += x;
+        this.rotation.y += y;
+        this.rotation.z += z;
+    }
+
+    public void increasePosition(float x, float y, float z) {
+        this.position.x += x;
+        this.position.y += y;
+        this.position.z += z;
+    }
+
     public float getScale() {
         return scale;
     }
