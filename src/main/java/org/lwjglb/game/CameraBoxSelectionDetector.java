@@ -4,6 +4,7 @@ import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjglb.engine.graph.Camera;
+import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.items.GameItem;
 
 public class CameraBoxSelectionDetector {
@@ -30,12 +31,16 @@ public class CameraBoxSelectionDetector {
         float closestDistance = Float.POSITIVE_INFINITY;
         System.out.println(selectedGameItem);
         for (GameItem gameItem : gameItems) {
+
+            System.out.println("Checking intersection for " + gameItem.getName());
+
             gameItem.setSelected(false);
             min.set(gameItem.getPosition());
             max.set(gameItem.getPosition());
             min.add(-gameItem.getScale(), -gameItem.getScale(), -gameItem.getScale());
             max.add(gameItem.getScale(), gameItem.getScale(), gameItem.getScale());
             if (Intersectionf.intersectRayAab(center, dir, min, max, nearFar) && nearFar.x < closestDistance) {
+                System.out.println("Ray intersected");
                 closestDistance = nearFar.x;
                 selectedGameItem = gameItem;
             }

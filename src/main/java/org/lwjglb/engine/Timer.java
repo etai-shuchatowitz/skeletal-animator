@@ -3,23 +3,31 @@ package org.lwjglb.engine;
 public class Timer {
 
     private static double lastFrameTime;
+    private static float delta;
     
     public static void init() {
-        lastFrameTime = getTime();
+        lastFrameTime = getCurrentTime();
     }
 
     /**
      * @return Current time in seconds
      */
-    public static double getTime() {
-        return System.nanoTime() / 1000_000_000.0;
+    public static long getCurrentTime() {
+        return System.nanoTime();
     }
 
-    public static float getElapsedTime() {
-        double time = getTime();
-        float elapsedTime = (float) (time - lastFrameTime);
-        lastFrameTime = time;
-        return elapsedTime;
+    public static void update() {
+        double currentFrameTime = getCurrentTime();
+
+        System.out.println("currentFrameTime: " + currentFrameTime);
+        System.out.println("lastFrameTime: " + lastFrameTime);
+        delta = (float) (currentFrameTime - lastFrameTime) / 100000000;
+        System.out.println("delta is: " + delta);
+        lastFrameTime = currentFrameTime;
+    }
+
+    public static float getFrameTimeSeconds() {
+        return delta;
     }
 
     public static double getLastFrameTime() {

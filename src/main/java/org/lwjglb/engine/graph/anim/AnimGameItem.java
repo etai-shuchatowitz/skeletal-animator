@@ -1,11 +1,14 @@
 package org.lwjglb.engine.graph.anim;
 
 import org.lwjglb.engine.Timer;
+import org.lwjglb.engine.Window;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.items.GameItem;
 
 import java.util.Map;
 import java.util.Optional;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class AnimGameItem extends GameItem {
 
@@ -38,32 +41,32 @@ public class AnimGameItem extends GameItem {
         this.currentAnimation = currentAnimation;
     }
 
-//    public void move() {
-//        System.out.println("I am moving");
-//        super.increaseRoation(0, (float) (currentTurnSpeed * Timer.getFrameTimeSeconds()), 0);
-//        float distance = currentSpeed * (float) Timer.getFrameTimeSeconds();
-//
-//        float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotation().y)));
-//        float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotation().y)));
-//
-//        super.setPosition(dx, 0, dz);
-//
-//    }
+    public void move(Window window) {
+        checkInputs(window);
+        super.increaseRoation(0, (currentTurnSpeed * Timer.getFrameTimeSeconds()), 0);
+        float distance = currentSpeed * Timer.getFrameTimeSeconds();
 
-    public void moveForward() {
-        this.currentSpeed = RUN_SPEED;
+        float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotation().y)));
+        float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotation().y)));
+
+        super.setPosition(super.getPosition().x + dx, 0, super.getPosition().z + dz);
+
     }
 
-    public void moveBackward() {
-        this.currentSpeed = -1 * RUN_SPEED;
+    private void checkInputs(Window window) {
+        if (window.isKeyPressed(GLFW_KEY_I)) {
+            this.currentSpeed = RUN_SPEED;
+        } else if (window.isKeyPressed(GLFW_KEY_K)) {
+            this.currentSpeed = -1 * RUN_SPEED;
+        } else {
+            this.currentSpeed = 0;
+        }
+        if (window.isKeyPressed(GLFW_KEY_J)) {
+            this.currentTurnSpeed = -1 * TURN_SPEED;
+        } else if (window.isKeyPressed(GLFW_KEY_L)) {
+            this.currentTurnSpeed = TURN_SPEED;
+        } else {
+            currentTurnSpeed = 0;
+        }
     }
-
-    public void turnClockwise() {
-        this.currentTurnSpeed = -1 * TURN_SPEED;
-    }
-
-    public void turnCounterClockwise() {
-        this.currentTurnSpeed = TURN_SPEED;
-    }
-
 }

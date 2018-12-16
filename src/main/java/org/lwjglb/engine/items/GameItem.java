@@ -17,10 +17,10 @@ public class GameItem {
     private final Quaternionf rotation;
 
     private int textPos;
-    
-    private boolean disableFrustumCulling;
 
     private boolean insideFrustum;
+
+    private String name;
 
     public GameItem() {
         selected = false;
@@ -29,7 +29,6 @@ public class GameItem {
         rotation = new Quaternionf();
         textPos = 0;
         insideFrustum = true;
-        disableFrustumCulling = false;
     }
 
     public GameItem(Mesh mesh) {
@@ -123,15 +122,11 @@ public class GameItem {
         return insideFrustum;
     }
 
-    public void setInsideFrustum(boolean insideFrustum) {
-        this.insideFrustum = insideFrustum;
-    }
-    
-    public boolean isDisableFrustumCulling() {
-        return disableFrustumCulling;
+    public String getName() {
+        return name;
     }
 
-    public void setDisableFrustumCulling(boolean disableFrustumCulling) {
-        this.disableFrustumCulling = disableFrustumCulling;
-    }    
+    public void setName(String name) {
+        this.name = name;
+    }
 }

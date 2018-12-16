@@ -29,7 +29,9 @@ MouseInput {
 
     public void init(Window window) {
         glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xpos, ypos) -> {
+//            System.out.println("x: " + xpos + ", y: " + ypos);
             currentPos.x = xpos;
+
             currentPos.y = ypos;
         });
         glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered) -> {

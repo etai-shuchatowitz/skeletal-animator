@@ -11,7 +11,6 @@ public class Main {
             boolean vSync = true;
             IGameLogic gameLogic = new InstanceAnimation();
             Window.WindowOptions opts = new Window.WindowOptions();
-            opts.cullFace = false;
             opts.showFps = true;
             opts.compatibleProfile = true;
             opts.antialiasing = true;

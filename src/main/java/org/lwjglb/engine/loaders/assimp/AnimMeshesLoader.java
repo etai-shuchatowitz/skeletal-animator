@@ -10,7 +10,15 @@ import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.anim.AnimGameItem;
 import org.lwjglb.engine.graph.anim.AnimatedFrame;
 import org.lwjglb.engine.graph.anim.Animation;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +38,8 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
             AIVectorKey aiVecKey = positionKeys.get(i);
             AIVector3D vec = aiVecKey.mValue();
 
+//            System.out.println("time is: " + aiVecKey.mTime());
+
             Matrix4f transfMat = new Matrix4f().translate(vec.x(), vec.y(), vec.z());
 
             AIQuatKey quatKey = rotationKeys.get(i);
@@ -44,6 +54,7 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
             }
 
             node.addTransformation(transfMat);
+            node.setTime(aiVecKey.mTime());
         }
     }
 
@@ -88,35 +99,13 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
         return item;
     }
 
-    private static List<AnimatedFrame> buildAnimationFrames(List<Bone> boneList, Node rootNode,
-            Matrix4f rootTransformation) {
-
-        int numFrames = rootNode.getAnimationFrames();
-        List<AnimatedFrame> frameList = new ArrayList<>();
-        for (int i = 0; i < numFrames; i++) {
-            AnimatedFrame frame = new AnimatedFrame();
-            frameList.add(frame);
-
-            int numBones = boneList.size();
-            for (int j = 0; j < numBones; j++) {
-                Bone bone = boneList.get(j);
-                Node node = rootNode.findByName(bone.getBoneName());
-                Matrix4f boneMatrix = Node.getParentTransforms(node, i);
-                boneMatrix.mul(bone.getOffsetMatrix());
-                boneMatrix = new Matrix4f(rootTransformation).mul(boneMatrix);
-                frame.setMatrix(j, boneMatrix);
-            }
-        }
-
-        return frameList;
-    }
-
     private static Map<String, Animation> processAnimations(AIScene aiScene, List<Bone> boneList,
             Node rootNode, Matrix4f rootTransformation) {
         Map<String, Animation> animations = new HashMap<>();
 
         // Process all animations
         int numAnimations = aiScene.mNumAnimations();
+        System.out.println("There are " + numAnimations + " animations");
         PointerBuffer aiAnimations = aiScene.mAnimations();
         for (int i = 0; i < numAnimations; i++) {
             AIAnimation aiAnimation = AIAnimation.create(aiAnimations.get(i));
@@ -137,6 +126,30 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
             animations.put(animation.getName(), animation);
         }
         return animations;
+    }
+
+    private static List<AnimatedFrame> buildAnimationFrames(List<Bone> boneList, Node rootNode,
+                                                            Matrix4f rootTransformation) {
+
+        int numFrames = rootNode.getAnimationFrames();
+        List<AnimatedFrame> frameList = new ArrayList<>();
+        for (int i = 0; i < numFrames; i++) {
+            AnimatedFrame frame = new AnimatedFrame();
+            frame.setTime(rootNode.getTime());
+
+            int numBones = boneList.size();
+            for (int j = 0; j < numBones; j++) {
+                Bone bone = boneList.get(j);
+                Node node = rootNode.findByName(bone.getBoneName());
+                Matrix4f boneMatrix = Node.getParentTransforms(node, i);
+                boneMatrix.mul(bone.getOffsetMatrix());
+                boneMatrix = new Matrix4f(rootTransformation).mul(boneMatrix);
+                frame.setMatrix(j, boneMatrix);
+            }
+            frameList.add(frame);
+        }
+
+        return frameList;
     }
 
     private static void processBones(AIMesh aiMesh, List<Bone> boneList, List<Integer> boneIds,

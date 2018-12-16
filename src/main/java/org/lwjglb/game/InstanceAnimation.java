@@ -1,5 +1,6 @@
 package org.lwjglb.game;
 
+import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -42,7 +43,9 @@ public class InstanceAnimation implements IGameLogic {
 
     private boolean sceneChanged;
 
-    private MouseBoxSelectionDetector selectDetector;
+//    private MouseBoxSelectionDetector selectDetector;
+//
+//    private MousePicker mousePicker;
 
     private List<Animation> animations;
 
@@ -60,21 +63,24 @@ public class InstanceAnimation implements IGameLogic {
     public void init(Window window) throws Exception {
         renderer.init(window);
 
+//        mousePicker = new MousePicker(camera, window.getProjectionMatrix(), camera.getViewMatrix());
+
         scene = new Scene();
 
-        Mesh[] terrainMesh = StaticMeshesLoader.load("src/main/resources/models/terrain/terrain.obj", "src/main/resources/models/terrain");
-        GameItem terrain = new GameItem(terrainMesh);
-        terrain.setScale(100.0f);
+//        Mesh[] terrainMesh = StaticMeshesLoader.load("src/main/resources/models/terrain/terrain.obj", "src/main/resources/models/terrain");
+//        GameItem terrain = new GameItem(terrainMesh);
+//        terrain.setName("Terrain");
+//        terrain.setScale(100.0f);
 
         List<GameItem> gameItemList = new ArrayList<>();
-        gameItemList.add(terrain);
+//        gameItemList.add(terrain);
         
         scene.setGameItems(gameItemList);
 
         // Shadows
         scene.setRenderShadows(true);
 
-        selectDetector = new MouseBoxSelectionDetector();
+//        selectDetector = new MouseBoxSelectionDetector();
 
         // Setup  SkyBox
         float skyBoxScale = 100.0f;
@@ -85,9 +91,9 @@ public class InstanceAnimation implements IGameLogic {
         // Setup Lights
         setupLights();
 
-        camera.getPosition().x = -1.5f;
-        camera.getPosition().y = 3.0f;
-        camera.getPosition().z = 4.5f;
+        camera.getPosition().x = 1.5f;
+        camera.getPosition().y = 4.0f;
+        camera.getPosition().z = 5.5f;
         camera.getRotation().x = 15.0f;
         camera.getRotation().y = 390.0f;
     }
@@ -114,7 +120,9 @@ public class InstanceAnimation implements IGameLogic {
         if(window.isKeyPressed(GLFW_KEY_0)) {
             AnimGameItem animItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/model.dae", "");
             animations.add(animItem.getCurrentAnimation());
-            animItem.setPosition(10, 0, 10);
+            animItem.setPosition(3, 0, 3);
+            animItem.setName("cowboy");
+            System.out.println("There are " + animItem.getMeshes().length + " meshes in cowboy");
             List<GameItem> gameItems = scene.getGameItems();
             gameItems.add(animItem);
             scene.setGameItems(gameItems);
@@ -123,6 +131,7 @@ public class InstanceAnimation implements IGameLogic {
             AnimGameItem animGameItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/bob/boblamp.md5mesh", "");
             animations.add(animGameItem.getCurrentAnimation());
             animGameItem.setScale(0.2f);
+            animGameItem.setName("bob");
             List<GameItem> gameItems = scene.getGameItems();
             gameItems.add(animGameItem);
             scene.setGameItems(gameItems);
@@ -165,45 +174,6 @@ public class InstanceAnimation implements IGameLogic {
                     animations.get(i).nextFrame();
                 }
             }
-
-        }
-        if (window.isKeyPressed(GLFW_KEY_I)) {
-            sceneChanged = true;
-            for (int i = 0; i < scene.getGameItems().size(); i++) {
-                GameItem gameItem = scene.getGameItems().get(i);
-                if(gameItem instanceof AnimGameItem) {
-                    AnimGameItem animGameItem = (AnimGameItem) gameItem;
-                    animGameItem.moveForward();
-                }
-            }
-        } else if (window.isKeyPressed(GLFW_KEY_K)) {
-            sceneChanged = true;
-            for (int i = 0; i < scene.getGameItems().size(); i++) {
-                GameItem gameItem = scene.getGameItems().get(i);
-                if(gameItem instanceof AnimGameItem) {
-                    AnimGameItem animGameItem = (AnimGameItem) gameItem;
-                    animGameItem.moveBackward();
-                }
-            }
-        }
-        if (window.isKeyPressed(GLFW_KEY_J)) {
-            sceneChanged = true;
-            for (int i = 0; i < scene.getGameItems().size(); i++) {
-                GameItem gameItem = scene.getGameItems().get(i);
-                if(gameItem instanceof AnimGameItem) {
-                    AnimGameItem animGameItem = (AnimGameItem) gameItem;
-                    animGameItem.turnClockwise();
-                }
-            }
-        } else if (window.isKeyPressed(GLFW_KEY_L)) {
-            sceneChanged = true;
-            for (int i = 0; i < scene.getGameItems().size(); i++) {
-                GameItem gameItem = scene.getGameItems().get(i);
-                if(gameItem instanceof AnimGameItem) {
-                    AnimGameItem animGameItem = (AnimGameItem) gameItem;
-                    animGameItem.turnCounterClockwise();
-                }
-            }
         }
     }
 
@@ -214,12 +184,6 @@ public class InstanceAnimation implements IGameLogic {
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
             sceneChanged = true;
-        }
-
-        if(mouseInput.isLeftButtonPressed()) {
-            GameItem[] gameItems = new GameItem[scene.getGameItems().size()];
-            gameItems = scene.getGameItems().toArray(gameItems);
-            selectDetector.selectGameItem(gameItems, window, mouseInput.getCurrentPos(), camera);
         }
 
         // Update camera position
@@ -239,19 +203,17 @@ public class InstanceAnimation implements IGameLogic {
         lightDirection.z = zValue;
         lightDirection.normalize();
 
-//        if (animations.size() != 0) {
-//            for (Animation animation : animations) {
-//                animation.nextFrame();
-//            }
-//        }
+        if (animations.size() != 0) {
+            for (Animation animation : animations) {
+                animation.nextFrame();
+            }
+        }
 
-//        for (int i = 0; i < scene.getGameItems().size(); i++) {
-//            GameItem gameItem = scene.getGameItems().get(i);
-//            if(gameItem instanceof AnimGameItem) {
-//                AnimGameItem animGameItem = (AnimGameItem) gameItem;
-//                animGameItem.move();
-//            }
-//        }
+        for (GameItem gameItem : scene.getGameItems()) {
+            if(gameItem instanceof AnimGameItem) {
+                ((AnimGameItem) gameItem).move(window);
+            }
+        }
 
         // Update view matrix
         camera.updateViewMatrix();
@@ -269,7 +231,6 @@ public class InstanceAnimation implements IGameLogic {
     @Override
     public void cleanup() {
         renderer.cleanup();
-
         scene.cleanup();
     }
 }

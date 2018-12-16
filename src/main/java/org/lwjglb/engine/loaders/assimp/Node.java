@@ -11,6 +11,8 @@ public class Node {
 
     private final List<Matrix4f> transformations;
 
+    private double time;
+
     private final String name;
 
     private final Node parent;
@@ -19,6 +21,7 @@ public class Node {
         this.name = name;
         this.parent = parent;
         this.transformations = new ArrayList<>();
+        this.time = 0;
         this.children = new ArrayList<>();
     }
 
@@ -32,7 +35,7 @@ public class Node {
             int transfSize = transformations.size();
             if (framePos < transfSize) {
                 nodeTransform = transformations.get(framePos);
-            } else if ( transfSize > 0 ) {
+            } else if (transfSize > 0) {
                 nodeTransform = transformations.get(transfSize - 1);
             } else {
                 nodeTransform = new Matrix4f();
@@ -47,6 +50,14 @@ public class Node {
 
     public void addTransformation(Matrix4f transformation) {
         transformations.add(transformation);
+    }
+
+    public void setTime(double time) {
+        this.time = time;
+    }
+
+    public double getTime() {
+        return time;
     }
 
     public Node findByName(String targetName) {

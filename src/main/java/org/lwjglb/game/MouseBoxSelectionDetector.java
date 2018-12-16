@@ -52,4 +52,9 @@ public class MouseBoxSelectionDetector extends CameraBoxSelectionDetector {
 
         return selectGameItem(gameItems, camera.getPosition(), mouseDir);
     }
+
+    public boolean selectGameItem(GameItem[] gameItems, Vector3f mousePos, Camera camera) {
+
+        return selectGameItem(gameItems, camera.getPosition(), mousePos);
+    }
 }
