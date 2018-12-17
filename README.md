@@ -1,5 +1,4 @@
 # skeletal-animator
-
 This is a simple skeletal-animator.
  
 Upon running, it will render a scene with a house object and 
