@@ -59,7 +59,7 @@ public class GameItem {
         this.position.z = z;
     }
 
-    public void increaseRoation(float x, float y, float z) {
+    public void increaseRotation(float x, float y, float z) {
         this.rotation.x += x;
         this.rotation.y += y;
         this.rotation.z += z;

@@ -41,6 +41,15 @@ public class Animation {
         calculateCurrentAnimationPose();
     }
 
+    public void nextFrame() {
+        int nextFrame = currentFrame + 1;
+        if (nextFrame > frames.size() - 1) {
+            currentFrame = 0;
+        } else {
+            currentFrame = nextFrame;
+        }
+    }
+
     /**
      * Increases the current animation time which allows the animation to
      * progress. If the current animation has reached the end then the timer is
@@ -55,7 +64,6 @@ public class Animation {
 
     private Matrix4f[] calculateCurrentAnimationPose() {
         AnimatedFrame[] currentFrames = getPreviousAndNextFrames();
-        System.out.println("Interpolating between " + currentFrames[0].getTime() + " and " + currentFrames[1].getTime());
         double progression = calculateProgression(currentFrames[0], currentFrames[1]);
         return interpolatePoses(currentFrames[0], currentFrames[1], progression);
     }
@@ -88,13 +96,13 @@ public class Animation {
             prevJointMatrix.lerp(nextTransform, (float) progression, currentTransform);
             currentPose[i] = currentTransform;
 
-            if(prevJointMatrix.m00() != 1) {
-                System.out.println("Prev Joint Matrix: " + prevJointMatrix);
-                System.out.println("Next Joint Matrix : " + nextTransform);
-
-                System.out.println("Current transform: " + currentTransform);
-                System.out.println("Progression is: " + progression);
-            }
+//            if(prevJointMatrix.m00() != 1) {
+//                System.out.println("Prev Joint Matrix: " + prevJointMatrix);
+//                System.out.println("Next Joint Matrix : " + nextTransform);
+//
+//                System.out.println("Current transform: " + currentTransform);
+//                System.out.println("Progression is: " + progression);
+//            }
 
             frames.get(currentFrame).updateInterpolatedJointMatrix(i, currentTransform);
 

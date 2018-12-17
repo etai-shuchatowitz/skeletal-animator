@@ -12,8 +12,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class AnimGameItem extends GameItem {
 
-    private static final float RUN_SPEED = 0.5f;
-    private static final float TURN_SPEED = 0.5f;
+    private static final float RUN_SPEED = 1f;
+    private static final float TURN_SPEED = 1f;
 
     private float currentSpeed = 0;
     private float currentTurnSpeed = 0;
@@ -43,7 +43,7 @@ public class AnimGameItem extends GameItem {
 
     public void move(Window window) {
         checkInputs(window);
-        super.increaseRoation(0, (currentTurnSpeed * Timer.getFrameTimeSeconds()), 0);
+        super.increaseRotation(0, (currentTurnSpeed * Timer.getFrameTimeSeconds()), 0);
         float distance = currentSpeed * Timer.getFrameTimeSeconds();
 
         float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotation().y)));

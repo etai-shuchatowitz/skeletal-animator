@@ -62,20 +62,18 @@ public class InstanceAnimation implements IGameLogic {
 
         scene = new Scene();
 
-//        Mesh[] terrainMesh = StaticMeshesLoader.load("src/main/resources/models/terrain/terrain.obj", "src/main/resources/models/terrain");
-//        GameItem terrain = new GameItem(terrainMesh);
-//        terrain.setName("Terrain");
-//        terrain.setScale(100.0f);
+        Mesh[] terrainMesh = StaticMeshesLoader.load("src/main/resources/models/terrain/terrain.obj", "src/main/resources/models/terrain");
+        GameItem terrain = new GameItem(terrainMesh);
+        terrain.setName("Terrain");
+        terrain.setScale(100.0f);
 
         List<GameItem> gameItemList = new ArrayList<>();
-//        gameItemList.add(terrain);
+        gameItemList.add(terrain);
 
         scene.setGameItems(gameItemList);
 
         // Shadows
         scene.setRenderShadows(true);
-
-//        selectDetector = new MouseBoxSelectionDetector();
 
         // Setup  SkyBox
         float skyBoxScale = 100.0f;
@@ -161,8 +159,6 @@ public class InstanceAnimation implements IGameLogic {
         } else {
             angleInc = 0;
         }
-        if (window.isKeyPressed(GLFW_KEY_SPACE)) {
-        }
     }
 
     @Override
@@ -174,8 +170,12 @@ public class InstanceAnimation implements IGameLogic {
             sceneChanged = true;
         } else if (mouseInput.isLeftButtonPressed()) {
             sceneChanged = true;
-            for (int i = 0; i < scene.getGameItems().size(); i++) {
-                animations.get(i).update();
+            for (int i = 0; i < animations.size(); i++) {
+                if (animations.get(i).getFrames().size() < 50) {
+                    animations.get(i).update();
+                } else {
+                    animations.get(i).nextFrame();
+                }
             }
         }
 
