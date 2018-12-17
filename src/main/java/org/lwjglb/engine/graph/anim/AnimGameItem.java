@@ -12,7 +12,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class AnimGameItem extends GameItem {
 
-    private static final float RUN_SPEED = 1f;
+    private static final float RUN_SPEED = 7f;
     private static final float TURN_SPEED = 1f;
 
     private float currentSpeed = 0;

@@ -24,11 +24,28 @@ public class Scene {
 
     private List<GameItem> gameItems;
 
+    public List<GameItem> getSelectableGameItems() {
+        return selectableGameItems;
+    }
+
+    public void setSelectableGameItems(List<GameItem> selectableGameItems) {
+        this.selectableGameItems = selectableGameItems;
+    }
+
+    private List<GameItem> selectableGameItems;
+
     public Scene() {
         meshMap = new HashMap();
         instancedMeshMap = new HashMap();
         renderShadows = true;
         gameItems = new ArrayList<>();
+        selectableGameItems = new ArrayList<>();
+    }
+
+    public GameItem removeGameItem(GameItem gameItem) {
+        gameItems.remove(gameItem);
+        selectableGameItems.remove(gameItem);
+        return gameItem;
     }
 
     public Map<Mesh, List<GameItem>> getGameMeshes() {
@@ -81,6 +98,10 @@ public class Scene {
         for (Mesh mesh : instancedMeshMap.keySet()) {
             mesh.cleanUp();
         }
+    }
+
+    public void addToSelectableGameItems(GameItem item) {
+        selectableGameItems.add(item);
     }
 
     public SkyBox getSkyBox() {

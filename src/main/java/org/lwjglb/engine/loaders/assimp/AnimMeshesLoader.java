@@ -2,6 +2,7 @@ package org.lwjglb.engine.loaders.assimp;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 import org.lwjglb.engine.Utils;
@@ -207,7 +208,10 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
         List<Integer> boneIds = new ArrayList<>();
         List<Float> weights = new ArrayList<>();
 
-        processVertices(aiMesh, vertices);
+        Vector3f max = new Vector3f();
+        Vector3f min = new Vector3f();
+
+        processVertices(aiMesh, vertices, max, min);
         processNormals(aiMesh, normals);
         processTextCoords(aiMesh, textures);
         processIndices(aiMesh, indices);
@@ -224,6 +228,8 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
             material = new Material();
         }
         mesh.setMaterial(material);
+        mesh.setMax(max);
+        mesh.setMin(min);
 
         return mesh;
     }

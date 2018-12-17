@@ -1,5 +1,6 @@
 package org.lwjglb.game;
 
+import org.joml.AABBf;
 import org.joml.Intersectionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -24,28 +25,19 @@ public class CameraBoxSelectionDetector {
         nearFar = new Vector2f();
     }
 
-    protected boolean selectGameItem(GameItem[] gameItems, Vector3f center, Vector3f dir) {
+    protected boolean selectGameItem(GameItem[] gameItems, Vector3f origin, Vector3f dir) {
 
         boolean selected = false;
         GameItem selectedGameItem = null;
         float closestDistance = Float.POSITIVE_INFINITY;
-        System.out.println(selectedGameItem);
         for (GameItem gameItem : gameItems) {
-
-            System.out.println("Checking intersection for " + gameItem.getName());
-
             gameItem.setSelected(false);
-            min.set(gameItem.getPosition());
-            max.set(gameItem.getPosition());
-            min.add(-gameItem.getScale(), -gameItem.getScale(), -gameItem.getScale());
-            max.add(gameItem.getScale(), gameItem.getScale(), gameItem.getScale());
-            if (Intersectionf.intersectRayAab(center, dir, min, max, nearFar) && nearFar.x < closestDistance) {
-                System.out.println("Ray intersected");
+            if (Intersectionf.intersectRaySphere(origin, dir, gameItem.getPosition(),
+                    gameItem.getMesh().getBoundingRadius(), nearFar) && nearFar.x < closestDistance) {
                 closestDistance = nearFar.x;
                 selectedGameItem = gameItem;
             }
         }
-
         if (selectedGameItem != null) {
             selectedGameItem.setSelected(true);
             selected = true;

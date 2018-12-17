@@ -1,12 +1,13 @@
 package org.lwjglb.game;
 
-import org.joml.*;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjglb.engine.*;
 import org.lwjglb.engine.graph.Camera;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.Renderer;
 import org.lwjglb.engine.graph.anim.AnimGameItem;
-import org.lwjglb.engine.graph.anim.AnimatedFrame;
 import org.lwjglb.engine.graph.anim.Animation;
 import org.lwjglb.engine.graph.lights.DirectionalLight;
 import org.lwjglb.engine.items.GameItem;
@@ -14,8 +15,8 @@ import org.lwjglb.engine.items.SkyBox;
 import org.lwjglb.engine.loaders.assimp.AnimMeshesLoader;
 import org.lwjglb.engine.loaders.assimp.StaticMeshesLoader;
 
-import java.lang.Math;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -44,6 +45,8 @@ public class InstanceAnimation implements IGameLogic {
 
     private List<Animation> animations;
 
+    private MouseBoxSelectionDetector mouseBoxSelectionDetector;
+
     public InstanceAnimation() {
         renderer = new Renderer();
         camera = new Camera();
@@ -52,6 +55,7 @@ public class InstanceAnimation implements IGameLogic {
         lightAngle = 90;
         firstTime = true;
         animations = new ArrayList<>();
+        mouseBoxSelectionDetector = new MouseBoxSelectionDetector();
     }
 
     @Override
@@ -86,7 +90,7 @@ public class InstanceAnimation implements IGameLogic {
 
         camera.getPosition().x = -1.5f;
         camera.getPosition().y = 7.0f;
-        camera.getPosition().z = 8.5f;
+        camera.getPosition().z = 15f;
         camera.getRotation().x = 15.0f;
         camera.getRotation().y = 390.0f;
     }
@@ -113,12 +117,14 @@ public class InstanceAnimation implements IGameLogic {
         if (window.isKeyPressed(GLFW_KEY_0)) {
             AnimGameItem animItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/model.dae", "");
             animations.add(animItem.getCurrentAnimation());
-            animItem.setPosition(5, 0, 0);
+            animItem.setPosition(10, 0, 0);
             animItem.setName("cowboy");
             System.out.println("There are " + animItem.getMeshes().length + " meshes in cowboy");
             List<GameItem> gameItems = scene.getGameItems();
             gameItems.add(animItem);
             scene.setGameItems(gameItems);
+
+            scene.addToSelectableGameItems(animItem);
         }
         if (window.isKeyPressed(GLFW_KEY_1)) {
             AnimGameItem animGameItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/bob/boblamp.md5mesh", "");
@@ -128,6 +134,8 @@ public class InstanceAnimation implements IGameLogic {
             List<GameItem> gameItems = scene.getGameItems();
             gameItems.add(animGameItem);
             scene.setGameItems(gameItems);
+
+            scene.addToSelectableGameItems(animGameItem);
         }
         if (window.isKeyPressed(GLFW_KEY_W)) {
             sceneChanged = true;
@@ -159,25 +167,31 @@ public class InstanceAnimation implements IGameLogic {
         } else {
             angleInc = 0;
         }
-    }
-
-    @Override
-    public void update(float interval, MouseInput mouseInput, Window window) {
-        if (mouseInput.isRightButtonPressed()) {
-            // Update camera based on mouse            
-            Vector2f rotVec = mouseInput.getDisplVec();
-            camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
-            sceneChanged = true;
-        } else if (mouseInput.isLeftButtonPressed()) {
+        if (window.isKeyPressed(GLFW_KEY_SPACE)) {
             sceneChanged = true;
             for (int i = 0; i < animations.size(); i++) {
                 if (animations.get(i).getFrames().size() < 50) {
                     animations.get(i).update();
-                } else {
-                    animations.get(i).nextFrame();
                 }
             }
         }
+    }
+
+    @Override
+    public void update(float interval, MouseInput mouseInput, Window window) {
+
+        for(int i = 0; i < scene.getSelectableGameItems().size(); i++) {
+            if(scene.getSelectableGameItems().get(i).getName().equalsIgnoreCase("bob")) {
+                animations.get(i).nextFrame();
+            } else if (scene.getSelectableGameItems().get(i).getName().equalsIgnoreCase("cowboy")) {
+                ((AnimGameItem) scene.getSelectableGameItems().get(i)).move(window);
+            }
+        }
+
+        GameItem[] gameItems = new GameItem[scene.getSelectableGameItems().size()];
+        gameItems = scene.getSelectableGameItems().toArray(gameItems);
+
+        mouseBoxSelectionDetector.selectGameItem(gameItems, window, mouseInput.getCurrentPos(), camera);
 
         // Update camera position
         camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP, cameraInc.z * CAMERA_POS_STEP);
@@ -196,10 +210,23 @@ public class InstanceAnimation implements IGameLogic {
         lightDirection.z = zValue;
         lightDirection.normalize();
 
-        for (GameItem gameItem : scene.getGameItems()) {
-            if (gameItem instanceof AnimGameItem) {
-                ((AnimGameItem) gameItem).move(window);
-            }
+        if (mouseInput.isRightButtonPressed()) {
+            // Update camera based on mouse
+            Vector2f rotVec = mouseInput.getDisplVec();
+            camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+            sceneChanged = true;
+        } else if (mouseInput.isLeftButtonPressed()) {
+//            List<GameItem> tempGameItemList = new ArrayList<>();
+//            for (Iterator<GameItem> gameItemItr = scene.getGameItems().iterator(); gameItemItr.hasNext(); ) {
+//                GameItem gameItem = gameItemItr.next();
+//                if (gameItem.isSelected()) {
+//                    tempGameItemList.add(gameItem);
+//                }
+//            }
+//            List<GameItem> newGameItemList = scene.getGameItems();
+//            newGameItemList.removeAll(tempGameItemList);
+//            scene.setGameItems(newGameItemList);
+//            scene.setSelectableGameItems(newGameItemList);
         }
 
         // Update view matrix

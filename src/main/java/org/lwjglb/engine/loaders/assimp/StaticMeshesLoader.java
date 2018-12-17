@@ -1,5 +1,6 @@
 package org.lwjglb.engine.loaders.assimp;
 
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
@@ -112,7 +113,10 @@ public class StaticMeshesLoader {
         List<Float> normals = new ArrayList<>();
         List<Integer> indices = new ArrayList();
 
-        processVertices(aiMesh, vertices);
+        Vector3f max = new Vector3f();
+        Vector3f min = new Vector3f();
+
+        processVertices(aiMesh, vertices, max, min);
         processNormals(aiMesh, normals);
         processTextCoords(aiMesh, textures);
         processIndices(aiMesh, indices);
@@ -127,6 +131,8 @@ public class StaticMeshesLoader {
             material = new Material();
         }
         mesh.setMaterial(material);
+        mesh.setMax(max);
+        mesh.setMin(min);
 
         return mesh;
     }
@@ -151,13 +157,48 @@ public class StaticMeshesLoader {
         }
     }
 
-    protected static void processVertices(AIMesh aiMesh, List<Float> vertices) {
+    protected static void processVertices(AIMesh aiMesh, List<Float> vertices, Vector3f max, Vector3f min) {
+
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minX = Float.POSITIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
+        float maxZ = Float.NEGATIVE_INFINITY;
+        float minZ = Float.POSITIVE_INFINITY;
+
         AIVector3D.Buffer aiVertices = aiMesh.mVertices();
         while (aiVertices.remaining() > 0) {
             AIVector3D aiVertex = aiVertices.get();
-            vertices.add(aiVertex.x());
-            vertices.add(aiVertex.y());
-            vertices.add(aiVertex.z());
+
+            float x = aiVertex.x();
+            float y = aiVertex.y();
+            float z = aiVertex.z();
+
+
+            vertices.add(x);
+            vertices.add(y);
+            vertices.add(z);
+
+            if(x > maxX) {
+                maxX = x;
+            }
+            if (x < minX) {
+                minX = x;
+            }
+            if(y > maxY) {
+                maxY = y;
+            }
+            if (y < minY) {
+                minY = y;
+            }
+            if(z > maxZ) {
+                maxZ = z;
+            }
+            if (z < minZ) {
+                minZ = z;
+            }
         }
+        max.set(maxX, maxY, maxZ);
+        min.set(minX, minY, minZ);
     }
 }

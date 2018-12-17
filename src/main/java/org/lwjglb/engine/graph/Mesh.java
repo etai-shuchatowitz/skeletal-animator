@@ -1,5 +1,6 @@
 package org.lwjglb.engine.graph;
 
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjglb.engine.items.GameItem;
 
@@ -29,6 +30,10 @@ public class Mesh {
     private Material material;
 
     private float boundingRadius;
+
+    private Vector3f max;
+
+    private Vector3f min;
 
     public Mesh(float[] positions, float[] textCoords, float[] normals, int[] indices) {
         this(positions, textCoords, normals, indices, createEmptyIntArray(MAX_WEIGHTS * positions.length / 3, 0), createEmptyFloatArray(MAX_WEIGHTS * positions.length / 3, 0));
@@ -159,6 +164,23 @@ public class Mesh {
     public void setBoundingRadius(float boundingRadius) {
         this.boundingRadius = boundingRadius;
     }
+
+    public Vector3f getMax() {
+        return max;
+    }
+
+    public void setMax(Vector3f max) {
+        this.max = max;
+    }
+
+    public Vector3f getMin() {
+        return min;
+    }
+
+    public void setMin(Vector3f min) {
+        this.min = min;
+    }
+
 
     protected void initRender() {
         Texture texture = material != null ? material.getTexture() : null;
