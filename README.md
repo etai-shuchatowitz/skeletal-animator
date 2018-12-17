@@ -12,7 +12,7 @@ other file types though these are the only ones it has been tested on.
 ## How to Build
 
 ```shell
-git clone 
+git clone https://github.com/NYUGraphics/final-project-etai-shuchatowitz.git
 ```
 
 Then open up your favorite IDE to run. 
@@ -29,4 +29,6 @@ Pressing 1 will make a Bob the lantern guy appear and his animation will run aut
 Pressing 0 will make the Cowboy appear. He is the only controllable character in the game. Use the spacebar to further the animation
 keyframe (that is, pressing and holding on spacebar will continously render the game). You can control his movements using I, J, K, L.
 
-
+Many thanks to 
+1. Antonio Hernández Bejarano and his Starter Code from https://legacy.gitbook.com/@lwjglgamedev
+2. https://github.com/TheThinMatrix/OpenGL-Animation - for help getting lots of kinks worked out
