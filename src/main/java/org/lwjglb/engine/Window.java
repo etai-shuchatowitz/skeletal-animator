@@ -80,7 +80,7 @@ public class Window {
             // Set up a fixed width and height so window initialization does not fail
             width = 100;
             height = 100;
-            glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+//            glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
             maximized = true;
         }
 

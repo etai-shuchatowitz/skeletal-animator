@@ -1,5 +1,8 @@
 package org.lwjglb.engine;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public class Timer {
 
     private static double lastFrameTime;
@@ -18,11 +21,9 @@ public class Timer {
 
     public static void update() {
         double currentFrameTime = getCurrentTime();
-
-        System.out.println("currentFrameTime: " + currentFrameTime);
-        System.out.println("lastFrameTime: " + lastFrameTime);
-        delta = (float) (currentFrameTime - lastFrameTime) / 100000000;
-        System.out.println("delta is: " + delta);
+        BigDecimal denom = new BigDecimal("1000000000");
+        BigDecimal num = new BigDecimal(String.valueOf(currentFrameTime - lastFrameTime));
+        delta = num.divide(denom).floatValue();
         lastFrameTime = currentFrameTime;
     }
 

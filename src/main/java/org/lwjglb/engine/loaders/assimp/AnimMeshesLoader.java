@@ -19,14 +19,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.assimp.Assimp.*;
 
 public class AnimMeshesLoader extends StaticMeshesLoader {
+
+    private static Map<Integer, Double> timeMap = new HashMap();
 
     private static void buildTransFormationMatrices(AINodeAnim aiNodeAnim, Node node) {
         int numFrames = aiNodeAnim.mNumPositionKeys();
@@ -37,8 +36,6 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
         for (int i = 0; i < numFrames; i++) {
             AIVectorKey aiVecKey = positionKeys.get(i);
             AIVector3D vec = aiVecKey.mValue();
-
-//            System.out.println("time is: " + aiVecKey.mTime());
 
             Matrix4f transfMat = new Matrix4f().translate(vec.x(), vec.y(), vec.z());
 
@@ -52,9 +49,9 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
                 vec = aiVecKey.mValue();
                 transfMat.scale(vec.x(), vec.y(), vec.z());
             }
-
+            System.out.println("Name is: " + node.getName());
             node.addTransformation(transfMat);
-            node.setTime(aiVecKey.mTime());
+            timeMap.put(i, aiVecKey.mTime());
         }
     }
 
@@ -135,7 +132,6 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
         List<AnimatedFrame> frameList = new ArrayList<>();
         for (int i = 0; i < numFrames; i++) {
             AnimatedFrame frame = new AnimatedFrame();
-            frame.setTime(rootNode.getTime());
 
             int numBones = boneList.size();
             for (int j = 0; j < numBones; j++) {
@@ -147,6 +143,14 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
                 frame.setMatrix(j, boneMatrix);
             }
             frameList.add(frame);
+        }
+
+        for (Map.Entry<Integer, Double> entry : timeMap.entrySet()) {
+            frameList.get(entry.getKey()).setTime(entry.getValue());
+        }
+
+        for (AnimatedFrame animatedFrame : frameList) {
+            System.out.println("Time: " + animatedFrame.getTime());
         }
 
         return frameList;

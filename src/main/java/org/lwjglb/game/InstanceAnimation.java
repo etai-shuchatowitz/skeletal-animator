@@ -1,14 +1,12 @@
 package org.lwjglb.game;
 
-import org.joml.Quaternionf;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
 import org.lwjglb.engine.*;
 import org.lwjglb.engine.graph.Camera;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.graph.Renderer;
 import org.lwjglb.engine.graph.anim.AnimGameItem;
+import org.lwjglb.engine.graph.anim.AnimatedFrame;
 import org.lwjglb.engine.graph.anim.Animation;
 import org.lwjglb.engine.graph.lights.DirectionalLight;
 import org.lwjglb.engine.items.GameItem;
@@ -16,6 +14,7 @@ import org.lwjglb.engine.items.SkyBox;
 import org.lwjglb.engine.loaders.assimp.AnimMeshesLoader;
 import org.lwjglb.engine.loaders.assimp.StaticMeshesLoader;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,10 +41,6 @@ public class InstanceAnimation implements IGameLogic {
     private boolean firstTime;
 
     private boolean sceneChanged;
-
-//    private MouseBoxSelectionDetector selectDetector;
-//
-//    private MousePicker mousePicker;
 
     private List<Animation> animations;
 
@@ -74,7 +69,7 @@ public class InstanceAnimation implements IGameLogic {
 
         List<GameItem> gameItemList = new ArrayList<>();
 //        gameItemList.add(terrain);
-        
+
         scene.setGameItems(gameItemList);
 
         // Shadows
@@ -91,9 +86,9 @@ public class InstanceAnimation implements IGameLogic {
         // Setup Lights
         setupLights();
 
-        camera.getPosition().x = 1.5f;
-        camera.getPosition().y = 4.0f;
-        camera.getPosition().z = 5.5f;
+        camera.getPosition().x = -1.5f;
+        camera.getPosition().y = 7.0f;
+        camera.getPosition().z = 8.5f;
         camera.getRotation().x = 15.0f;
         camera.getRotation().y = 390.0f;
     }
@@ -117,17 +112,17 @@ public class InstanceAnimation implements IGameLogic {
     public void input(Window window, MouseInput mouseInput) throws Exception {
         sceneChanged = false;
         cameraInc.set(0, 0, 0);
-        if(window.isKeyPressed(GLFW_KEY_0)) {
+        if (window.isKeyPressed(GLFW_KEY_0)) {
             AnimGameItem animItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/model.dae", "");
             animations.add(animItem.getCurrentAnimation());
-            animItem.setPosition(3, 0, 3);
+            animItem.setPosition(0, 0, 0);
             animItem.setName("cowboy");
             System.out.println("There are " + animItem.getMeshes().length + " meshes in cowboy");
             List<GameItem> gameItems = scene.getGameItems();
             gameItems.add(animItem);
             scene.setGameItems(gameItems);
         }
-        if(window.isKeyPressed(GLFW_KEY_1)) {
+        if (window.isKeyPressed(GLFW_KEY_1)) {
             AnimGameItem animGameItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/bob/boblamp.md5mesh", "");
             animations.add(animGameItem.getCurrentAnimation());
             animGameItem.setScale(0.2f);
@@ -164,16 +159,9 @@ public class InstanceAnimation implements IGameLogic {
             sceneChanged = true;
             angleInc += 0.05f;
         } else {
-            angleInc = 0;            
+            angleInc = 0;
         }
         if (window.isKeyPressed(GLFW_KEY_SPACE)) {
-            sceneChanged = true;
-            for (int i = 0; i < scene.getGameItems().size(); i++) {
-                GameItem gameItem = scene.getGameItems().get(i);
-                if(gameItem.isSelected()) {
-                    animations.get(i).nextFrame();
-                }
-            }
         }
     }
 
@@ -184,6 +172,11 @@ public class InstanceAnimation implements IGameLogic {
             Vector2f rotVec = mouseInput.getDisplVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
             sceneChanged = true;
+        } else if (mouseInput.isLeftButtonPressed()) {
+            sceneChanged = true;
+            for (int i = 0; i < scene.getGameItems().size(); i++) {
+                animations.get(i).update();
+            }
         }
 
         // Update camera position
@@ -203,14 +196,8 @@ public class InstanceAnimation implements IGameLogic {
         lightDirection.z = zValue;
         lightDirection.normalize();
 
-        if (animations.size() != 0) {
-            for (Animation animation : animations) {
-                animation.nextFrame();
-            }
-        }
-
         for (GameItem gameItem : scene.getGameItems()) {
-            if(gameItem instanceof AnimGameItem) {
+            if (gameItem instanceof AnimGameItem) {
                 ((AnimGameItem) gameItem).move(window);
             }
         }

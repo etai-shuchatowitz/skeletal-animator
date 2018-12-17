@@ -27,10 +27,6 @@ public class Animation {
     public AnimatedFrame getCurrentFrame() {
         return this.frames.get(currentFrame);
     }
-
-    public double getDuration() {
-        return this.duration;        
-    }
     
     public List<AnimatedFrame> getFrames() {
         return frames;
@@ -40,30 +36,9 @@ public class Animation {
         return name;
     }
 
-    public AnimatedFrame getNextFrame() {
-        nextFrame();
-        return this.frames.get(currentFrame);
-    }
-
     public void update() {
         increaseAnimationTime();
-        Matrix4f[] currentPoses = calculateCurrentAnimationPose();
-        frames.get(currentFrame).setInterpolatedJointMatrices(currentPoses);
-        int nextFrame = currentFrame + 1;
-        if (nextFrame > frames.size() - 1) {
-            currentFrame = 0;
-        } else {
-            currentFrame = nextFrame;
-        }
-    }
-
-    public void nextFrame() {
-        int nextFrame = currentFrame + 1;
-        if (nextFrame > frames.size() - 1) {
-            currentFrame = 0;
-        } else {
-            currentFrame = nextFrame;
-        }
+        calculateCurrentAnimationPose();
     }
 
     /**
@@ -72,17 +47,30 @@ public class Animation {
      * reset, causing the animation to loop.
      */
     private void increaseAnimationTime() {
-        animationTime += Timer.getCurrentTime();
+        animationTime += Timer.getFrameTimeSeconds();
         if (animationTime > duration) {
             this.animationTime %= duration;
         }
     }
 
     private Matrix4f[] calculateCurrentAnimationPose() {
-        AnimatedFrame previousFrame = frames.get(currentFrame);
-        AnimatedFrame nextFrame = frames.get(currentFrame+1);
-        double progression = calculateProgression(previousFrame, nextFrame);
-        return interpolatePoses(previousFrame, nextFrame, progression);
+        AnimatedFrame[] currentFrames = getPreviousAndNextFrames();
+        System.out.println("Interpolating between " + currentFrames[0].getTime() + " and " + currentFrames[1].getTime());
+        double progression = calculateProgression(currentFrames[0], currentFrames[1]);
+        return interpolatePoses(currentFrames[0], currentFrames[1], progression);
+    }
+
+    private AnimatedFrame[] getPreviousAndNextFrames() {
+        AnimatedFrame previousFrame = frames.get(0);
+        AnimatedFrame nextFrame = frames.get(0);
+        for (int i = 1; i < frames.size(); i++) {
+            nextFrame = frames.get(i);
+            if (nextFrame.getTime() > animationTime) {
+                break;
+            }
+            previousFrame = frames.get(i);
+        }
+        return new AnimatedFrame[] { previousFrame, nextFrame };
     }
 
     private double calculateProgression(AnimatedFrame previousFrame, AnimatedFrame nextFrame) {
@@ -92,14 +80,27 @@ public class Animation {
     }
 
     private Matrix4f[] interpolatePoses(AnimatedFrame prevFrame, AnimatedFrame nextFrame, double progression) {
-        Matrix4f[] currentPoses = new Matrix4f[prevFrame.getJointMatrices().length];
+        Matrix4f[] currentPose = new Matrix4f[prevFrame.getJointMatrices().length];
         for (int i = 0; i < prevFrame.getJointMatrices().length; i++) {
             Matrix4f prevJointMatrix = prevFrame.getJointMatrices()[i];
             Matrix4f nextTransform = nextFrame.getJointMatrices()[i];
-            Matrix4f currentTransform = prevJointMatrix.lerp(nextTransform, (float) progression);
-            currentPoses[i] = currentTransform;
+            Matrix4f currentTransform = new Matrix4f();
+            prevJointMatrix.lerp(nextTransform, (float) progression, currentTransform);
+            currentPose[i] = currentTransform;
+
+            if(prevJointMatrix.m00() != 1) {
+                System.out.println("Prev Joint Matrix: " + prevJointMatrix);
+                System.out.println("Next Joint Matrix : " + nextTransform);
+
+                System.out.println("Current transform: " + currentTransform);
+                System.out.println("Progression is: " + progression);
+            }
+
+            frames.get(currentFrame).updateInterpolatedJointMatrix(i, currentTransform);
+
+//            System.out.println("Prev frame joint matrix is: " + frames.get(currentFrame).getJointMatrices()[i]);
         }
-        return currentPoses;
+        return currentPose;
     }
 
 }

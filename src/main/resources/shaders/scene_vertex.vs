@@ -1,6 +1,6 @@
 #version 330
 
-const int MAX_WEIGHTS = 4;
+const int MAX_WEIGHTS = 3;
 const int MAX_JOINTS = 150;
 const int NUM_CASCADES = 3;
 

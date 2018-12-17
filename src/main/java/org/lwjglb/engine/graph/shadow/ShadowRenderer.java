@@ -123,7 +123,7 @@ public class ShadowRenderer {
                 if (gameItem instanceof AnimGameItem) {
                     AnimGameItem animGameItem = (AnimGameItem) gameItem;
                     AnimatedFrame frame = animGameItem.getCurrentAnimation().getCurrentFrame();
-                    depthShaderProgram.setUniform("jointsMatrix", frame.getJointMatrices());
+                    depthShaderProgram.setUniform("jointsMatrix", frame.getInterpolatedJointMatrices());
                 }
             }
             );
