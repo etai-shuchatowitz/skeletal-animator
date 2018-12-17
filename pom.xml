@@ -60,7 +60,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <built.by>lwjglgamedev</built.by>
-        <main.class>org.org.lwjglb.game.Main</main.class>
+        <main.class>org.animator.game.Main</main.class>
         <!-- Versions -->
         <java.version>9</java.version>
         <mvn.complilerplug.version>3.7.0</mvn.complilerplug.version>
