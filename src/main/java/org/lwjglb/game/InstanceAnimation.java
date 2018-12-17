@@ -191,7 +191,12 @@ public class InstanceAnimation implements IGameLogic {
             if(scene.getSelectableGameItems().get(i).getName().equalsIgnoreCase("bob")) {
                 animations.get(i).nextFrame();
             } else if (scene.getSelectableGameItems().get(i).getName().equalsIgnoreCase("cowboy")) {
-                ((AnimGameItem) scene.getSelectableGameItems().get(i)).move(window);
+                if(scene.getSelectableGameItems().get(i) instanceof AnimGameItem) {
+                    AnimGameItem animGameItem = (AnimGameItem) scene.getSelectableGameItems().get(i);
+                    List<GameItem> otherItems = scene.getGameItems();
+                    otherItems.remove(animGameItem);
+                    animGameItem.move(window, otherItems);
+                }
             }
         }
 

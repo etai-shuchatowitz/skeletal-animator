@@ -1,10 +1,14 @@
 package org.lwjglb.engine.graph.anim;
 
+import org.joml.Intersectionf;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjglb.engine.Timer;
 import org.lwjglb.engine.Window;
 import org.lwjglb.engine.graph.Mesh;
 import org.lwjglb.engine.items.GameItem;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,8 +45,10 @@ public class AnimGameItem extends GameItem {
         this.currentAnimation = currentAnimation;
     }
 
-    public void move(Window window) {
-        checkInputs(window);
+    public void move(Window window, List<GameItem> otherItems) {
+
+        boolean isCollided = isCollided(otherItems);
+        checkInputs(window, isCollided);
         super.increaseRotation(0, (currentTurnSpeed * Timer.getFrameTimeSeconds()), 0);
         float distance = currentSpeed * Timer.getFrameTimeSeconds();
 
@@ -51,11 +57,25 @@ public class AnimGameItem extends GameItem {
         float dz = (float) (distance * Math.cos(super.getRotation().y));
 
         super.increasePosition(dx, 0, dz);
-
     }
 
-    private void checkInputs(Window window) {
-        if (window.isKeyPressed(GLFW_KEY_I)) {
+    public boolean isCollided(List<GameItem> gameItemList) {
+        Vector4f nearA = new Vector4f();
+        Vector3f centerA = this.getPosition();
+        float radiusA = this.getMesh().getBoundingRadius();
+        for(GameItem gameItem : gameItemList) {
+            Vector3f centerB = gameItem.getPosition();
+            float radiusB = gameItem.getMesh().getBoundingRadius();
+            if(Intersectionf.intersectSphereSphere(centerA, radiusA, centerB, radiusB, nearA)) {
+                return  true;
+            }
+        }
+
+        return  false;
+    }
+
+    private void checkInputs(Window window, boolean isCollided) {
+        if (window.isKeyPressed(GLFW_KEY_I) && !isCollided) {
             this.currentSpeed = RUN_SPEED;
         } else if (window.isKeyPressed(GLFW_KEY_K)) {
             this.currentSpeed = -1 * RUN_SPEED;
