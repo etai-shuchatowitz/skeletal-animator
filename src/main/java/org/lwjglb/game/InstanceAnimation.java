@@ -18,6 +18,7 @@ import org.lwjglb.engine.loaders.assimp.StaticMeshesLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -216,17 +217,26 @@ public class InstanceAnimation implements IGameLogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
             sceneChanged = true;
         } else if (mouseInput.isLeftButtonPressed()) {
-//            List<GameItem> tempGameItemList = new ArrayList<>();
-//            for (Iterator<GameItem> gameItemItr = scene.getGameItems().iterator(); gameItemItr.hasNext(); ) {
-//                GameItem gameItem = gameItemItr.next();
-//                if (gameItem.isSelected()) {
-//                    tempGameItemList.add(gameItem);
+//            for (Map.Entry<Mesh, List<GameItem>> entry : scene.getGameMeshes().entrySet()) {
+//                List<GameItem> tempGameItemList = new ArrayList<>();
+//                List<GameItem> tempSelectable = new ArrayList<>();
+//                for (GameItem gameItem : entry.getValue()) {
+//                    if(!gameItem.isSelected()) {
+//                        tempGameItemList.add(gameItem);
+//                        if(!gameItem.getName().equalsIgnoreCase("terrain")) {
+//                            tempSelectable.add(gameItem);
+//                        }
+//                    }
 //                }
+//                scene.getGameMeshes().put(entry.getKey(), tempGameItemList);
+//                scene.setGameItems(tempGameItemList);
+//                scene.setSelectableGameItems(tempSelectable);
 //            }
-//            List<GameItem> newGameItemList = scene.getGameItems();
-//            newGameItemList.removeAll(tempGameItemList);
-//            scene.setGameItems(newGameItemList);
-//            scene.setSelectableGameItems(newGameItemList);
+//            sceneChanged = true;
+        }
+
+        for (GameItem gameItem : scene.getGameItems()) {
+            System.out.println(gameItem.getName());
         }
 
         // Update view matrix
