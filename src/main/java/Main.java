@@ -11,7 +11,6 @@ public class Main {
             IGameLogic gameLogic = new InstanceAnimation();
             Window.WindowOptions opts = new Window.WindowOptions();
             opts.showFps = true;
-            opts.compatibleProfile = true;
             opts.antialiasing = true;
             GameEngine gameEng = new GameEngine("GAME", vSync, opts, gameLogic);
             gameEng.start();

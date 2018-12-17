@@ -67,11 +67,12 @@ public class Window {
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE); // the window will be resizable
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-        if (opts.compatibleProfile) {
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-        } else {
+        String osName = System.getProperty("os.name");
+        if(osName.contains("Mac")) {
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        } else {
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
         }
 
         boolean maximized = false;
@@ -80,7 +81,7 @@ public class Window {
             // Set up a fixed width and height so window initialization does not fail
             width = 100;
             height = 100;
-//            glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+            glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
             maximized = true;
         }
 
@@ -224,8 +225,6 @@ public class Window {
         public boolean showTriangles;
 
         public boolean showFps;
-
-        public boolean compatibleProfile;
 
         public boolean antialiasing;
     }

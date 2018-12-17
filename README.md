@@ -13,6 +13,20 @@ other file types though these are the only ones it has been tested on.
 
 ```shell
 git clone 
-mvn clean package
-
 ```
+
+Then open up your favorite IDE to run. 
+
+NOTE: I spent way too long very late at night trying to get the jar to build and for some reason on my Mac this would not work. 
+I would like to be able to build and compile through the jar but it won't happen right now.
+
+## How to Control
+
+You will start in a house. Control the camera by using the left-click of the mouse. You can further zoom in and out and up and down using 
+W, A, S, D respectively. 
+
+Pressing 1 will make a Bob the lantern guy appear and his animation will run automatically.
+Pressing 0 will make the Cowboy appear. He is the only controllable character in the game. Use the spacebar to further the animation
+keyframe (that is, pressing and holding on spacebar will continously render the game). You can control his movements using I, J, K, L.
+
+
