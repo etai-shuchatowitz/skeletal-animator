@@ -1,5 +1,6 @@
 package org.lwjglb.game;
 
+import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -144,6 +145,32 @@ public class InstanceAnimation implements IGameLogic {
 
             scene.addToSelectableGameItems(animGameItem);
         }
+        if (window.isKeyPressed(GLFW_KEY_2)) {
+            AnimGameItem animGameItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/dragon/dragon.dae", "");
+            animations.add(animGameItem.getCurrentAnimation());
+            animGameItem.setScale(1f);
+            animGameItem.setPosition(-50, 0, -50);
+            animGameItem.setName("dragon");
+            List<GameItem> gameItems = scene.getGameItems();
+            gameItems.add(animGameItem);
+            scene.setGameItems(gameItems);
+
+            scene.addToSelectableGameItems(animGameItem);
+        }
+        if (window.isKeyPressed(GLFW_KEY_3)) {
+            AnimGameItem animGameItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/wolf/wolf.dae", "");
+            animations.add(animGameItem.getCurrentAnimation());
+            animGameItem.setScale(6f);
+            animGameItem.setPosition(-50, 4, 50);
+            Quaternionf quaternionf = new Quaternionf((float) Math.toRadians(90/4), 0, (float) Math.sin(Math.toRadians(90/4)), 0);
+            animGameItem.setRotation(quaternionf);
+            animGameItem.setName("wolf");
+            List<GameItem> gameItems = scene.getGameItems();
+            gameItems.add(animGameItem);
+            scene.setGameItems(gameItems);
+
+            scene.addToSelectableGameItems(animGameItem);
+        }
         if (window.isKeyPressed(GLFW_KEY_W)) {
             sceneChanged = true;
             cameraInc.z = -1;
@@ -188,7 +215,7 @@ public class InstanceAnimation implements IGameLogic {
     public void update(float interval, MouseInput mouseInput, Window window) {
 
         for(int i = 0; i < scene.getSelectableGameItems().size(); i++) {
-            if(scene.getSelectableGameItems().get(i).getName().equalsIgnoreCase("bob")) {
+            if(!scene.getSelectableGameItems().get(i).getName().equalsIgnoreCase("cowboy")) {
                 animations.get(i).nextFrame();
             } else if (scene.getSelectableGameItems().get(i).getName().equalsIgnoreCase("cowboy")) {
                 if(scene.getSelectableGameItems().get(i) instanceof AnimGameItem) {
