@@ -46,8 +46,9 @@ public class AnimGameItem extends GameItem {
         super.increaseRotation(0, (currentTurnSpeed * Timer.getFrameTimeSeconds()), 0);
         float distance = currentSpeed * Timer.getFrameTimeSeconds();
 
-        float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotation().y)));
-        float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotation().y)));
+        System.out.println("Y: " + super.getRotation().y());
+        float dx = (float) (distance * Math.sin(super.getRotation().y));
+        float dz = (float) (distance * Math.cos(super.getRotation().y));
 
         super.increasePosition(dx, 0, dz);
 

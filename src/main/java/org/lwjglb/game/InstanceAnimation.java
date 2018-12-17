@@ -63,8 +63,6 @@ public class InstanceAnimation implements IGameLogic {
     public void init(Window window) throws Exception {
         renderer.init(window);
 
-//        mousePicker = new MousePicker(camera, window.getProjectionMatrix(), camera.getViewMatrix());
-
         scene = new Scene();
 
         Mesh[] terrainMesh = StaticMeshesLoader.load("src/main/resources/models/terrain/terrain.obj", "src/main/resources/models/terrain");
@@ -72,8 +70,15 @@ public class InstanceAnimation implements IGameLogic {
         terrain.setName("Terrain");
         terrain.setScale(100.0f);
 
+        Mesh[] houseMesh = StaticMeshesLoader.load("src/main/resources/models/house/house.obj", "src/main/resources/models/house");
+        GameItem house = new GameItem(houseMesh);
+        house.setName("house");
+        house.setPosition(-10, 0, -10);
+
+
         List<GameItem> gameItemList = new ArrayList<>();
         gameItemList.add(terrain);
+        gameItemList.add(house);
 
         scene.setGameItems(gameItemList);
 
@@ -131,6 +136,7 @@ public class InstanceAnimation implements IGameLogic {
             AnimGameItem animGameItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/bob/boblamp.md5mesh", "");
             animations.add(animGameItem.getCurrentAnimation());
             animGameItem.setScale(0.2f);
+            animGameItem.setPosition(30, 0, 30);
             animGameItem.setName("bob");
             List<GameItem> gameItems = scene.getGameItems();
             gameItems.add(animGameItem);
