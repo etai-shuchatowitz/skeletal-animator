@@ -113,7 +113,7 @@ public class InstanceAnimation implements IGameLogic {
         if (window.isKeyPressed(GLFW_KEY_0)) {
             AnimGameItem animItem = AnimMeshesLoader.loadAnimGameItem("src/main/resources/models/model.dae", "");
             animations.add(animItem.getCurrentAnimation());
-            animItem.setPosition(0, 0, 0);
+            animItem.setPosition(5, 0, 0);
             animItem.setName("cowboy");
             System.out.println("There are " + animItem.getMeshes().length + " meshes in cowboy");
             List<GameItem> gameItems = scene.getGameItems();

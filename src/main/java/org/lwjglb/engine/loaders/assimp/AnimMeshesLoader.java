@@ -25,7 +25,7 @@ import static org.lwjgl.assimp.Assimp.*;
 
 public class AnimMeshesLoader extends StaticMeshesLoader {
 
-    private static Map<Integer, Double> timeMap = new HashMap();
+    private static Map<Integer, Double> timeMap;
 
     private static void buildTransFormationMatrices(AINodeAnim aiNodeAnim, Node node) {
         int numFrames = aiNodeAnim.mNumPositionKeys();
@@ -65,6 +65,7 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
     public static AnimGameItem loadAnimGameItem(String resourcePath, String texturesDir, int flags)
             throws Exception {
         AIScene aiScene = aiImportFile(resourcePath, flags);
+        timeMap = new HashMap<>();
         if (aiScene == null) {
             throw new Exception("Error loading model");
         }
